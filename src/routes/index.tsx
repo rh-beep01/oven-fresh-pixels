@@ -18,11 +18,17 @@ import {
   Plus, 
   Minus, 
   Smartphone, 
-  Award
+  Award,
+  CreditCard,
+  Cake,
+  Sliders,
+  User,
+  Mail,
+  Lock
 } from "lucide-react";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import logoAsset from "@/assets/heidelberg-logo.png.asset.json";
+import officialLogo from "@/assets/heidelberg-official-logo.png";
 import heroImage from "@/assets/heidelberg-hero.jpg";
 import cakesImage from "@/assets/cakes-category.jpg";
 import breadsImage from "@/assets/breads-category.jpg";
@@ -222,10 +228,17 @@ function Index() {
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState<"all" | "breads" | "cakes" | "pastries" | "deli">("all");
 
-  // Cart State
+  // Cart & Checkout State
   const [cart, setCart] = useState<CartItem[]>([]);
   const [cartOpen, setCartOpen] = useState(false);
   const [pickupTime, setPickupTime] = useState("Today, 3:00 PM – 4:00 PM");
+  const [customerName, setCustomerName] = useState("");
+  const [customerPhone, setCustomerPhone] = useState("");
+  const [customerEmail, setCustomerEmail] = useState("");
+  const [paymentMethod, setPaymentMethod] = useState<"card" | "shoppay" | "counter">("card");
+  const [cardNumber, setCardNumber] = useState("4242 •••• •••• 4242");
+  const [cardExp, setCardExp] = useState("08/28");
+  const [cardCvc, setCardCvc] = useState("789");
   const [orderPlacedMessage, setOrderPlacedMessage] = useState<string | null>(null);
 
   // Custom Cake Studio State
@@ -235,6 +248,9 @@ function Index() {
   const [cakeFilling, setCakeFilling] = useState("Authentic Bavarian Vanilla Custard");
   const [cakeInscription, setCakeInscription] = useState("Happy 50th Birthday!");
   const [cakeDate, setCakeDate] = useState("Saturday (72 hrs notice)");
+  const [cakeCustomerName, setCakeCustomerName] = useState("");
+  const [cakeCustomerPhone, setCakeCustomerPhone] = useState("");
+  const [cakeCustomerEmail, setCakeCustomerEmail] = useState("");
   const [cakeSubmitted, setCakeSubmitted] = useState(false);
 
   // Order Tracker State
@@ -266,25 +282,29 @@ function Index() {
   const cartItemCount = cart.reduce((sum, i) => sum + i.quantity, 0);
 
   const handleCheckoutMock = () => {
+    const finalName = customerName.trim() || "Valued Customer";
     const newOrderId = `#HB-${Math.floor(1000 + Math.random() * 9000)}`;
-    setOrderPlacedMessage(`Order ${newOrderId} confirmed! Automatic pickup notification will be sent via SMS.`);
+    setOrderPlacedMessage(`Thank you ${finalName}! Order ${newOrderId} is placed. SMS confirmation sent to ${customerPhone || "(703) 555-0199"}.`);
+    
     setActiveTracking({
       orderId: newOrderId,
-      customerName: "Guest Customer",
-      itemsSummary: `${cartItemCount} item(s) from Heidelberg Bakery`,
+      customerName: finalName,
+      itemsSummary: `${cartItemCount} item(s) • Paid via ${paymentMethod === "card" ? "Credit Card" : paymentMethod === "shoppay" ? "Shop Pay" : "Pay at Counter"}`,
       scheduledPickup: pickupTime,
-      pickupLocation: "2150 N. Culpeper St, Arlington, VA",
+      pickupLocation: "2150 N. Culpeper St, Arlington, VA (Counter #1)",
       status: "confirmed",
       lastUpdated: "Just now",
     });
+
     setCart([]);
     setTimeout(() => {
       setCartOpen(false);
+      setOrderPlacedMessage(null);
       const trackElem = document.getElementById("track-order");
       if (trackElem) {
         trackElem.scrollIntoView({ behavior: "smooth" });
       }
-    }, 1800);
+    }, 2400);
   };
 
   // Staff simulation switch
@@ -312,13 +332,13 @@ function Index() {
   return (
     <main className="min-h-screen overflow-x-hidden bg-background text-foreground selection:bg-accent/30 selection:text-accent-foreground">
       {/* Top Banner with Shopify & Heritage Notice */}
-      <div className="bg-primary px-4 py-2.5 text-center text-xs font-medium text-primary-foreground sm:px-6">
+      <div className="bg-primary px-4 py-2 text-center text-xs font-medium text-primary-foreground sm:px-6">
         <div className="mx-auto flex max-w-7xl items-center justify-between">
           <span className="hidden sm:inline-flex items-center gap-1.5 font-semibold text-accent">
             <Award className="size-3.5" /> 50 Years in Arlington (Est. 1975)
           </span>
           <p className="mx-auto sm:mx-0">
-            <strong>Fresh German Breads, Milestone Cakes & Deli</strong> — Pre-order online for scheduled local pickup!
+            <strong>Authentic German Breads, Cakes & Delicatessen</strong> — Order ahead for scheduled pickup!
           </p>
           <a
             href="#track-order"
@@ -329,20 +349,20 @@ function Index() {
         </div>
       </div>
 
-      {/* Main Navigation */}
+      {/* Main Navigation with OFFICIAL WEBSITE LOGO */}
       <header className="sticky top-0 z-40 border-b border-border bg-background/95 backdrop-blur-md shadow-xs">
-        <div className="mx-auto flex h-22 max-w-7xl items-center justify-between px-5 lg:px-8">
-          <a href="#top" aria-label="Heidelberg Pastry Shoppe home" className="flex items-center gap-3 shrink-0">
+        <div className="mx-auto flex h-20 max-w-7xl items-center justify-between px-5 lg:px-8">
+          <a href="#top" aria-label="Heidelberg Pastry Shoppe home" className="flex items-center gap-3 shrink-0 py-1">
             <img
-              src={logoAsset.url}
-              alt="Heidelberg Pastry Shoppe"
-              className="h-14 w-auto drop-shadow-xs transition-transform hover:scale-102"
-              width="184"
-              height="112"
+              src={officialLogo}
+              alt="Heidelberg Pastry Shoppe Official Logo"
+              className="h-13 w-auto object-contain transition-transform hover:scale-102"
+              width="220"
+              height="60"
             />
           </a>
 
-          <nav className="hidden items-center gap-7 lg:flex" aria-label="Main navigation">
+          <nav className="hidden items-center gap-6 lg:flex" aria-label="Main navigation">
             <a className="nav-link" href="#menu">Bakery Menu & Pricing</a>
             <a className="nav-link" href="#cake-builder">Custom Cake Studio</a>
             <a className="nav-link" href="#track-order">Live Order Tracker</a>
@@ -354,9 +374,9 @@ function Index() {
           <div className="flex items-center gap-3">
             <a
               href="tel:7035278394"
-              className="hidden items-center gap-1.5 text-sm font-semibold text-foreground/80 hover:text-accent md:inline-flex"
+              className="hidden items-center gap-1.5 text-xs font-semibold text-foreground/80 hover:text-accent md:inline-flex"
             >
-              <Phone className="size-4 text-accent" /> (703) 527-8394
+              <Phone className="size-3.5 text-accent" /> (703) 527-8394
             </a>
 
             {/* Cart Trigger Button */}
@@ -364,7 +384,7 @@ function Index() {
               variant="bakery"
               size="sm"
               onClick={() => setCartOpen(true)}
-              className="relative flex items-center gap-2 font-semibold"
+              className="relative flex items-center gap-2 font-semibold text-xs h-10 px-4 cursor-pointer"
             >
               <ShoppingBag className="size-4" />
               <span className="hidden sm:inline">Order Tray</span>
@@ -378,7 +398,7 @@ function Index() {
             <Button
               variant="ghost"
               size="icon"
-              className="lg:hidden"
+              className="lg:hidden cursor-pointer"
               aria-label={mobileNavOpen ? "Close menu" : "Open menu"}
               onClick={() => setMobileNavOpen((open) => !open)}
             >
@@ -515,9 +535,9 @@ function Index() {
       </section>
 
       {/* SECTION 1: Modern Bakery Menu with Prices & Order Options */}
-      <section id="menu" className="py-20 sm:py-24 bg-background">
+      <section id="menu" className="py-16 sm:py-20 bg-background">
         <div className="mx-auto max-w-7xl px-5 lg:px-8">
-          <div className="flex flex-col justify-between gap-4 md:flex-row md:items-end mb-10">
+          <div className="flex flex-col justify-between gap-4 md:flex-row md:items-end mb-8">
             <div>
               <p className="eyebrow">Direct From Our Hearth Ovens</p>
               <h2 className="section-title">Explore Our Bakery & Order Ahead</h2>
@@ -527,30 +547,40 @@ function Index() {
             </p>
           </div>
 
-          {/* Category Filter Tabs */}
-          <div className="flex flex-wrap gap-2 border-b border-border pb-4 mb-8">
-            {[
-              { id: "all", label: "All Items" },
-              { id: "breads", label: "Artisan Breads & Pretzels" },
-              { id: "cakes", label: "Milestone Cakes & Tortes" },
-              { id: "pastries", label: "European Pastries" },
-              { id: "deli", label: "Deli Sandwiches & Savory" },
-            ].map((tab) => (
-              <button
-                key={tab.id}
-                onClick={() => setSelectedCategory(tab.id as any)}
-                className={`rounded-full px-5 py-2 text-xs font-bold transition-all cursor-pointer ${
-                  selectedCategory === tab.id
-                    ? "bg-primary text-primary-foreground shadow-sm"
-                    : "bg-muted text-muted-foreground hover:bg-secondary hover:text-foreground"
-                }`}
-              >
-                {tab.label}
-              </button>
-            ))}
+          {/* STICKY CATEGORY NAV BAR: Stays pinned while scrolling through the menu */}
+          <div className="sticky top-20 z-30 mb-8 rounded-lg border border-border bg-card/90 px-4 py-3 shadow-md backdrop-blur-md">
+            <div className="flex items-center justify-between gap-2 overflow-x-auto">
+              <div className="flex items-center gap-2 shrink-0">
+                <Sliders className="size-4 text-accent hidden sm:inline" />
+                <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground hidden sm:inline">
+                  Categories:
+                </span>
+              </div>
+              <div className="flex items-center gap-2 overflow-x-auto pb-1 sm:pb-0">
+                {[
+                  { id: "all", label: "All Items" },
+                  { id: "breads", label: "Artisan Breads & Pretzels" },
+                  { id: "cakes", label: "Milestone Cakes & Tortes" },
+                  { id: "pastries", label: "European Pastries" },
+                  { id: "deli", label: "Deli Sandwiches & Savory" },
+                ].map((tab) => (
+                  <button
+                    key={tab.id}
+                    onClick={() => setSelectedCategory(tab.id as any)}
+                    className={`rounded-full px-4 py-1.5 text-xs font-bold whitespace-nowrap transition-all cursor-pointer ${
+                      selectedCategory === tab.id
+                        ? "bg-primary text-primary-foreground shadow-sm"
+                        : "bg-muted text-muted-foreground hover:bg-secondary hover:text-foreground"
+                    }`}
+                  >
+                    {tab.label}
+                  </button>
+                ))}
+              </div>
+            </div>
           </div>
 
-          {/* Product Grid */}
+          {/* Product Grid with PRICE IN BOTTOM-RIGHT OF BOX */}
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {filteredMenu.map((item) => (
               <div
@@ -570,22 +600,15 @@ function Index() {
                     </div>
                   </div>
 
-                  <div className="p-5">
-                    <div className="flex items-start justify-between gap-2">
-                      <div>
-                        <h3 className="font-display text-lg font-bold text-foreground group-hover:text-accent transition-colors">
-                          {item.name}
-                        </h3>
-                        {item.germanName && (
-                          <p className="text-xs italic text-muted-foreground">{item.germanName}</p>
-                        )}
-                      </div>
-                      <span className="font-display text-lg font-bold text-foreground">
-                        ${item.price.toFixed(2)}
-                      </span>
-                    </div>
+                  <div className="p-5 pb-3">
+                    <h3 className="font-display text-lg font-bold text-foreground group-hover:text-accent transition-colors">
+                      {item.name}
+                    </h3>
+                    {item.germanName && (
+                      <p className="text-xs italic text-muted-foreground mt-0.5">{item.germanName}</p>
+                    )}
 
-                    <p className="mt-2 text-xs leading-relaxed text-muted-foreground line-clamp-2">
+                    <p className="mt-2.5 text-xs leading-relaxed text-muted-foreground line-clamp-2">
                       {item.description}
                     </p>
 
@@ -597,16 +620,31 @@ function Index() {
                   </div>
                 </div>
 
-                <div className="border-t border-border/80 p-4 bg-muted/30 flex items-center justify-between">
-                  <span className="text-xs text-muted-foreground">Pickup in 2-4 hrs</span>
-                  <Button
-                    variant="bakery"
-                    size="sm"
-                    onClick={() => addToCart(item)}
-                    className="font-semibold text-xs"
-                  >
-                    <Plus className="size-3.5" /> Add to Order
-                  </Button>
+                {/* BOTTOM SECTION: Left has pickup info, RIGHT has PROMINENT PRICE & Add button */}
+                <div className="border-t border-border/80 p-4 bg-muted/30 flex items-center justify-between gap-3">
+                  <div>
+                    <span className="text-[11px] text-muted-foreground block">Hearth Pickup</span>
+                    <span className="text-xs font-semibold text-foreground/80">Fresh Daily</span>
+                  </div>
+
+                  {/* Lower-Right Price & Action Block */}
+                  <div className="flex items-center gap-3">
+                    <div className="text-right">
+                      <span className="text-[10px] uppercase tracking-wider text-muted-foreground block">Price</span>
+                      <span className="font-display text-lg font-bold text-accent">
+                        ${item.price.toFixed(2)}
+                      </span>
+                    </div>
+
+                    <Button
+                      variant="bakery"
+                      size="sm"
+                      onClick={() => addToCart(item)}
+                      className="font-semibold text-xs cursor-pointer shadow-xs"
+                    >
+                      <Plus className="size-3.5" /> Add
+                    </Button>
+                  </div>
                 </div>
               </div>
             ))}
@@ -615,23 +653,23 @@ function Index() {
           <div className="mt-12 text-center bg-secondary p-8 rounded-md border border-border">
             <h3 className="font-display text-xl font-bold">Planning an Event or Need a Custom Cake?</h3>
             <p className="mt-2 text-sm text-muted-foreground max-w-xl mx-auto">
-              Use our interactive Custom Cake Studio below to select tiers, Bavarian fillings, custom piping messages, and secure your celebration date.
+              Use our interactive Custom Cake Studio below to select tiers, Bavarian fillings, custom piping messages, and enter your details to secure your celebration date.
             </p>
-            <Button asChild variant="bakery" className="mt-5">
+            <Button asChild variant="bakery" className="mt-5 cursor-pointer">
               <a href="#cake-builder">Open Custom Cake Studio &rarr;</a>
             </Button>
           </div>
         </div>
       </section>
 
-      {/* SECTION 2: Interactive Custom Cake & Catering Studio */}
+      {/* SECTION 2: Interactive Custom Cake & Catering Studio with Customer Contact Fields */}
       <section id="cake-builder" className="border-y border-border bg-secondary/50 py-20 sm:py-24">
         <div className="mx-auto max-w-7xl px-5 lg:px-8">
           <div className="mb-12 text-center max-w-3xl mx-auto">
             <span className="eyebrow">Interactive Cake Studio</span>
             <h2 className="section-title">Design Your Custom Celebration Cake</h2>
             <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
-              Eliminate phone tag and paper forms. Customize size, fillings, and piping in seconds with an instant price estimate and 72-hour lead time scheduling.
+              Eliminate phone tag and paper forms. Customize size, fillings, and piping in seconds with an instant price estimate, contact details, and 72-hour lead time scheduling.
             </p>
           </div>
 
@@ -761,10 +799,49 @@ function Index() {
                 />
               </div>
 
-              {/* Step 6: Pickup Date */}
+              {/* Step 6: Customer Contact Details */}
+              <div className="border-t border-border pt-6 space-y-4">
+                <label className="block text-xs font-bold uppercase tracking-wider text-accent flex items-center gap-1.5">
+                  <User className="size-3.5" /> Step 6: Your Contact Details for Bakery Confirmation
+                </label>
+                <div className="grid gap-3 sm:grid-cols-3">
+                  <div>
+                    <span className="text-[11px] font-semibold text-muted-foreground block mb-1">Full Name *</span>
+                    <input
+                      type="text"
+                      value={cakeCustomerName}
+                      onChange={(e) => setCakeCustomerName(e.target.value)}
+                      placeholder="e.g. Eleanor Vance"
+                      className="w-full rounded-md border border-input bg-background p-2 text-xs focus:border-accent focus:outline-none"
+                    />
+                  </div>
+                  <div>
+                    <span className="text-[11px] font-semibold text-muted-foreground block mb-1">Phone Number (SMS) *</span>
+                    <input
+                      type="tel"
+                      value={cakeCustomerPhone}
+                      onChange={(e) => setCakeCustomerPhone(e.target.value)}
+                      placeholder="(703) 555-0199"
+                      className="w-full rounded-md border border-input bg-background p-2 text-xs focus:border-accent focus:outline-none"
+                    />
+                  </div>
+                  <div>
+                    <span className="text-[11px] font-semibold text-muted-foreground block mb-1">Email Address *</span>
+                    <input
+                      type="email"
+                      value={cakeCustomerEmail}
+                      onChange={(e) => setCakeCustomerEmail(e.target.value)}
+                      placeholder="name@example.com"
+                      className="w-full rounded-md border border-input bg-background p-2 text-xs focus:border-accent focus:outline-none"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* Step 7: Pickup Date */}
               <div>
                 <label className="block text-xs font-bold uppercase tracking-wider text-muted-foreground mb-2">
-                  Step 6: Requested Pickup Day (Minimum 72 Hours Lead Time)
+                  Step 7: Requested Pickup Day (Minimum 72 Hours Lead Time)
                 </label>
                 <div className="flex flex-wrap gap-2">
                   {[
@@ -819,6 +896,10 @@ function Index() {
                     <strong className="text-accent text-right italic font-serif">"{cakeInscription || "None"}"</strong>
                   </div>
                   <div className="flex justify-between">
+                    <span>Customer:</span>
+                    <strong className="text-primary-foreground text-right">{cakeCustomerName || "Eleanor Vance"}</strong>
+                  </div>
+                  <div className="flex justify-between">
                     <span>Scheduled Pickup:</span>
                     <strong className="text-primary-foreground text-right">{cakeDate}</strong>
                   </div>
@@ -836,7 +917,7 @@ function Index() {
                     <CheckCircle2 className="size-8 text-emerald-400 mx-auto mb-2" />
                     <strong className="block text-sm text-emerald-200">Custom Cake Order Received!</strong>
                     <p className="mt-1 text-xs text-emerald-300">
-                      Ticket <strong>#HB-CUSTOM-92</strong> created in Shopify. Our bakery coordinator will confirm via SMS within 2 hours.
+                      Ticket <strong>#HB-CUSTOM-92</strong> created for {cakeCustomerName || "Eleanor Vance"}. Confirmation sent via SMS.
                     </p>
                   </div>
                 ) : (
@@ -921,7 +1002,9 @@ function Index() {
                       key={code}
                       onClick={() => {
                         setTrackingInput(code);
-                        if (mockOrders[code]) { setActiveTracking(mockOrders[code]); }
+                        if (mockOrders[code]) {
+                          setActiveTracking(mockOrders[code]);
+                        }
                       }}
                       className={`rounded-xs border px-2.5 py-1 text-xs font-mono font-bold transition-all cursor-pointer ${
                         activeTracking.orderId === code
@@ -1190,7 +1273,7 @@ function Index() {
         </div>
       </section>
 
-      {/* SECTION 7: Pitch Deck / Why Shopify Transformation Bar (Discreet Owner Proposition) */}
+      {/* SECTION 7: Pitch Deck / Why Shopify Transformation Bar */}
       <section className="bg-primary text-primary-foreground py-12 border-t border-accent/30">
         <div className="mx-auto max-w-7xl px-5 lg:px-8">
           <div className="flex flex-col md:flex-row items-center justify-between gap-6">
@@ -1212,17 +1295,17 @@ function Index() {
         </div>
       </section>
 
-      {/* Footer */}
+      {/* Footer with OFFICIAL WEBSITE LOGO */}
       <footer className="bg-primary/95 py-12 text-primary-foreground border-t border-primary-foreground/10">
         <div className="mx-auto flex max-w-7xl flex-col gap-8 px-5 md:flex-row md:items-end md:justify-between lg:px-8">
           <div>
             <img
-              src={logoAsset.url}
-              alt="Heidelberg Pastry Shoppe"
+              src={officialLogo}
+              alt="Heidelberg Pastry Shoppe Official Logo"
               loading="lazy"
-              width="184"
-              height="112"
-              className="logo-invert h-16 w-auto"
+              width="220"
+              height="60"
+              className="h-14 w-auto object-contain brightness-0 invert"
             />
             <p className="mt-4 max-w-sm text-sm leading-6 text-primary-muted">
               Authentic German bakery, wedding cakes, and European delicatessen serving Arlington, Virginia since 1975.
@@ -1243,7 +1326,30 @@ function Index() {
         </div>
       </footer>
 
-      {/* Cart Drawer Slide-Over Modal */}
+      {/* FLOATING ACTION WIDGET: Always visible on screen as the user scrolls */}
+      <div className="fixed bottom-6 right-6 z-40 flex flex-col sm:flex-row items-end sm:items-center gap-2.5">
+        <Button
+          onClick={() => setCartOpen(true)}
+          variant="bakery"
+          className="shadow-2xl flex items-center gap-2 text-xs font-bold h-11 px-4 border border-accent/40 bg-primary text-primary-foreground hover:bg-accent hover:text-accent-foreground cursor-pointer"
+        >
+          <ShoppingBag className="size-4 text-accent" />
+          <span>Order Tray</span>
+          {cartItemCount > 0 && (
+            <span className="rounded-full bg-accent text-accent-foreground px-2 py-0.5 text-[11px] font-bold">
+              {cartItemCount}
+            </span>
+          )}
+        </Button>
+
+        <Button asChild variant="bakery" className="shadow-2xl text-xs font-bold h-11 px-4 bg-accent text-accent-foreground hover:bg-white hover:text-foreground cursor-pointer">
+          <a href="#cake-builder">
+            <Cake className="size-4" /> Design Custom Cake
+          </a>
+        </Button>
+      </div>
+
+      {/* Cart Drawer Slide-Over Modal with CUSTOMER DETAILS & PAYMENT FORM */}
       {cartOpen && (
         <div className="fixed inset-0 z-50 flex justify-end bg-black/60 backdrop-blur-xs animate-in fade-in-50">
           <div className="w-full max-w-md bg-card text-card-foreground shadow-2xl flex flex-col h-full animate-in slide-in-from-right duration-300 border-l border-border">
@@ -1261,53 +1367,58 @@ function Index() {
               </Button>
             </div>
 
-            {/* Cart Items List */}
-            <div className="flex-1 overflow-y-auto p-5 space-y-4">
+            {/* Cart Items List & Customer Details Form */}
+            <div className="flex-1 overflow-y-auto p-5 space-y-5">
               {cart.length === 0 ? (
                 <div className="py-16 text-center text-muted-foreground">
                   <ShoppingBag className="size-12 mx-auto mb-3 text-muted-foreground/40" />
                   <p className="font-display text-base font-bold text-foreground">Your tray is empty</p>
                   <p className="text-xs mt-1">Browse our fresh loaves, cakes, and pastries to add items.</p>
-                  <Button variant="bakery" size="sm" onClick={() => setCartOpen(false)} className="mt-5">
+                  <Button variant="bakery" size="sm" onClick={() => setCartOpen(false)} className="mt-5 cursor-pointer">
                     Browse Menu
                   </Button>
                 </div>
               ) : (
                 <>
-                  {cart.map(({ item, quantity }) => (
-                    <div
-                      key={item.id}
-                      className="flex items-center justify-between gap-3 border-b border-border pb-3.5"
-                    >
-                      <div className="flex-1">
-                        <strong className="block text-xs font-bold text-foreground">{item.name}</strong>
-                        <span className="text-xs text-accent font-semibold">${item.price.toFixed(2)}</span>
+                  <div className="space-y-3">
+                    <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground block">
+                      Order Items
+                    </span>
+                    {cart.map(({ item, quantity }) => (
+                      <div
+                        key={item.id}
+                        className="flex items-center justify-between gap-3 border-b border-border pb-3"
+                      >
+                        <div className="flex-1">
+                          <strong className="block text-xs font-bold text-foreground">{item.name}</strong>
+                          <span className="text-xs text-accent font-semibold">${item.price.toFixed(2)}</span>
+                        </div>
+                        <div className="flex items-center gap-2 border border-border rounded-md px-2 py-1 bg-background">
+                          <button
+                            onClick={() => updateQuantity(item.id, -1)}
+                            className="text-muted-foreground hover:text-foreground cursor-pointer"
+                            aria-label="Decrease quantity"
+                          >
+                            <Minus className="size-3" />
+                          </button>
+                          <span className="text-xs font-bold min-w-4 text-center">{quantity}</span>
+                          <button
+                            onClick={() => updateQuantity(item.id, 1)}
+                            className="text-muted-foreground hover:text-foreground cursor-pointer"
+                            aria-label="Increase quantity"
+                          >
+                            <Plus className="size-3" />
+                          </button>
+                        </div>
+                        <span className="text-xs font-display font-bold text-foreground min-w-14 text-right">
+                          ${(item.price * quantity).toFixed(2)}
+                        </span>
                       </div>
-                      <div className="flex items-center gap-2 border border-border rounded-md px-2 py-1 bg-background">
-                        <button
-                          onClick={() => updateQuantity(item.id, -1)}
-                          className="text-muted-foreground hover:text-foreground cursor-pointer"
-                          aria-label="Decrease quantity"
-                        >
-                          <Minus className="size-3" />
-                        </button>
-                        <span className="text-xs font-bold min-w-4 text-center">{quantity}</span>
-                        <button
-                          onClick={() => updateQuantity(item.id, 1)}
-                          className="text-muted-foreground hover:text-foreground cursor-pointer"
-                          aria-label="Increase quantity"
-                        >
-                          <Plus className="size-3" />
-                        </button>
-                      </div>
-                      <span className="text-xs font-display font-bold text-foreground min-w-14 text-right">
-                        ${(item.price * quantity).toFixed(2)}
-                      </span>
-                    </div>
-                  ))}
+                    ))}
+                  </div>
 
                   {/* Pickup Slot Selector */}
-                  <div className="mt-6 rounded-md bg-secondary p-4 border border-border space-y-2">
+                  <div className="rounded-md bg-secondary p-4 border border-border space-y-2">
                     <label className="block text-xs font-bold text-foreground flex items-center gap-1.5">
                       <Clock3 className="size-3.5 text-accent" /> Select Pickup Window (Culpeper St)
                     </label>
@@ -1322,15 +1433,142 @@ function Index() {
                       <option value="Tomorrow, 11:00 AM – 12:00 PM">Tomorrow, 11:00 AM – 12:00 PM</option>
                       <option value="Saturday, 9:00 AM – 10:00 AM">Saturday, 9:00 AM – 10:00 AM</option>
                     </select>
-                    <p className="text-[11px] text-muted-foreground">
-                      Curbside pickup or in-store counter pickup ready at this time.
-                    </p>
+                  </div>
+
+                  {/* CUSTOMER CONTACT INFORMATION */}
+                  <div className="rounded-md border border-border p-4 bg-card space-y-3">
+                    <span className="text-xs font-bold uppercase tracking-wider text-accent flex items-center gap-1.5">
+                      <User className="size-3.5" /> Customer Details for Pickup
+                    </span>
+                    <div>
+                      <label className="text-[11px] font-semibold text-muted-foreground block mb-1">Full Name *</label>
+                      <input
+                        type="text"
+                        value={customerName}
+                        onChange={(e) => setCustomerName(e.target.value)}
+                        placeholder="Eleanor Vance"
+                        className="w-full rounded-md border border-input bg-background p-2 text-xs focus:border-accent focus:outline-none"
+                      />
+                    </div>
+                    <div>
+                      <label className="text-[11px] font-semibold text-muted-foreground block mb-1">Phone Number (For SMS Ready Alert) *</label>
+                      <input
+                        type="tel"
+                        value={customerPhone}
+                        onChange={(e) => setCustomerPhone(e.target.value)}
+                        placeholder="(703) 555-0199"
+                        className="w-full rounded-md border border-input bg-background p-2 text-xs focus:border-accent focus:outline-none"
+                      />
+                    </div>
+                    <div>
+                      <label className="text-[11px] font-semibold text-muted-foreground block mb-1">Email (Digital Receipt) *</label>
+                      <input
+                        type="email"
+                        value={customerEmail}
+                        onChange={(e) => setCustomerEmail(e.target.value)}
+                        placeholder="eleanor@example.com"
+                        className="w-full rounded-md border border-input bg-background p-2 text-xs focus:border-accent focus:outline-none"
+                      />
+                    </div>
+                  </div>
+
+                  {/* PAYMENT METHOD SELECTION & DEMO PAYMENT FORM */}
+                  <div className="rounded-md border border-border p-4 bg-card space-y-3">
+                    <span className="text-xs font-bold uppercase tracking-wider text-foreground flex items-center gap-1.5">
+                      <CreditCard className="size-3.5 text-accent" /> Payment Method (Demo)
+                    </span>
+                    
+                    <div className="grid grid-cols-3 gap-1.5">
+                      <button
+                        type="button"
+                        onClick={() => setPaymentMethod("card")}
+                        className={`rounded-md border p-2 text-center text-[11px] font-semibold transition-all cursor-pointer ${
+                          paymentMethod === "card"
+                            ? "border-accent bg-accent/15 text-foreground ring-1 ring-accent"
+                            : "border-border text-muted-foreground hover:bg-muted"
+                        }`}
+                      >
+                        Credit Card
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setPaymentMethod("shoppay")}
+                        className={`rounded-md border p-2 text-center text-[11px] font-semibold transition-all cursor-pointer ${
+                          paymentMethod === "shoppay"
+                            ? "border-accent bg-accent/15 text-foreground ring-1 ring-accent"
+                            : "border-border text-muted-foreground hover:bg-muted"
+                        }`}
+                      >
+                        Shop Pay
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setPaymentMethod("counter")}
+                        className={`rounded-md border p-2 text-center text-[11px] font-semibold transition-all cursor-pointer ${
+                          paymentMethod === "counter"
+                            ? "border-accent bg-accent/15 text-foreground ring-1 ring-accent"
+                            : "border-border text-muted-foreground hover:bg-muted"
+                        }`}
+                      >
+                        Pay at Store
+                      </button>
+                    </div>
+
+                    {paymentMethod === "card" && (
+                      <div className="space-y-2 pt-2 border-t border-border">
+                        <div>
+                          <label className="text-[10px] text-muted-foreground block mb-0.5">Card Number</label>
+                          <div className="relative">
+                            <input
+                              type="text"
+                              value={cardNumber}
+                              onChange={(e) => setCardNumber(e.target.value)}
+                              className="w-full rounded-md border border-input bg-background p-2 text-xs font-mono focus:border-accent focus:outline-none"
+                            />
+                            <Lock className="size-3 text-muted-foreground absolute right-2.5 top-2.5" />
+                          </div>
+                        </div>
+                        <div className="grid grid-cols-2 gap-2">
+                          <div>
+                            <label className="text-[10px] text-muted-foreground block mb-0.5">Expires</label>
+                            <input
+                              type="text"
+                              value={cardExp}
+                              onChange={(e) => setCardExp(e.target.value)}
+                              className="w-full rounded-md border border-input bg-background p-2 text-xs font-mono focus:border-accent focus:outline-none"
+                            />
+                          </div>
+                          <div>
+                            <label className="text-[10px] text-muted-foreground block mb-0.5">CVC</label>
+                            <input
+                              type="text"
+                              value={cardCvc}
+                              onChange={(e) => setCardCvc(e.target.value)}
+                              className="w-full rounded-md border border-input bg-background p-2 text-xs font-mono focus:border-accent focus:outline-none"
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    )}
+
+                    {paymentMethod === "shoppay" && (
+                      <div className="rounded-md bg-purple-950/20 border border-purple-500/30 p-2.5 text-center text-xs text-purple-800 dark:text-purple-300">
+                        <span className="font-bold">⚡ 1-Click Shop Pay Checkout</span>
+                        <p className="text-[10px] text-muted-foreground mt-0.5">Verified via SMS 6-digit code for 50% faster checkout.</p>
+                      </div>
+                    )}
+
+                    {paymentMethod === "counter" && (
+                      <div className="rounded-md bg-secondary p-2.5 text-center text-xs text-muted-foreground">
+                        <span>Pay with cash or card at the pickup counter (2150 N. Culpeper St).</span>
+                      </div>
+                    )}
                   </div>
                 </>
               )}
             </div>
 
-            {/* Footer with Checkout */}
+            {/* Footer with Subtotals & Submit Checkout */}
             {cart.length > 0 && (
               <div className="p-5 border-t border-border bg-muted/40 space-y-3">
                 <div className="flex justify-between text-xs text-muted-foreground">
@@ -1342,7 +1580,7 @@ function Index() {
                   <span className="font-semibold text-foreground">${(cartTotal * 0.06).toFixed(2)}</span>
                 </div>
                 <div className="flex justify-between text-sm font-bold text-foreground border-t border-border pt-2">
-                  <span>Estimated Total</span>
+                  <span>Total Due</span>
                   <span className="font-display text-base text-accent">
                     ${(cartTotal * 1.06).toFixed(2)}
                   </span>
@@ -1358,7 +1596,7 @@ function Index() {
                     onClick={handleCheckoutMock}
                     className="w-full justify-center bg-accent text-accent-foreground hover:bg-primary hover:text-primary-foreground font-bold h-12 text-sm cursor-pointer"
                   >
-                    1-Click Checkout with Shop Pay &rarr;
+                    Confirm & Place Bakery Order &rarr;
                   </Button>
                 )}
                 <p className="text-[10px] text-center text-muted-foreground">
