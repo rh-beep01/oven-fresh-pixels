@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { 
+  FileText,
   ArrowRight, 
   ChevronDown, 
   ChevronLeft,
@@ -629,6 +630,12 @@ function Index() {
   const [customerPhone, setCustomerPhone] = useState("");
   const [customerEmail, setCustomerEmail] = useState("");
   const [orderNotes, setOrderNotes] = useState("");
+  const [billingCountry, setBillingCountry] = useState("United States (US)");
+  const [streetAddress, setStreetAddress] = useState("");
+  const [apartmentSuite, setApartmentSuite] = useState("");
+  const [townCity, setTownCity] = useState("Arlington");
+  const [stateProvince, setStateProvince] = useState("Virginia");
+  const [zipCode, setZipCode] = useState("");
   const [paymentMethod, setPaymentMethod] = useState<"card" | "shoppay" | "counter">("card");
   const [cardNumber, setCardNumber] = useState("4242 •••• •••• 4242");
   const [cardExp, setCardExp] = useState("08/28");
@@ -821,8 +828,16 @@ function Index() {
     ]);
 
     setPickupTime(`${cakeDate} Window`);
-    setCheckoutModalOpen(true);
-    setCheckoutStep("form");
+
+    const currentQty = cart.reduce((sum, i) => sum + i.quantity, 0);
+    setToastItem({
+      item: customCakeItem,
+      count: currentQty + 1,
+      option: `${cakeSize.name} • ${cakeSponge}`
+    });
+
+    // Add to cart first & open cart drawer
+    setCartOpen(true);
   };
 
   const handleContactSubmit = (e: React.FormEvent) => {
@@ -1627,7 +1642,7 @@ function Index() {
                   onClick={handleCustomCakeTransferToCheckout}
                   className="bg-accent text-accent-foreground hover:bg-primary hover:text-primary-foreground font-bold text-xs h-11 px-5 cursor-pointer shadow-md"
                 >
-                  Order Custom Cake &rarr;
+                  Add Custom Cake to Cart &rarr;
                 </Button>
               </div>
 
@@ -2249,36 +2264,25 @@ function Index() {
                 {/* Section 1: Customer Contact Info */}
                 <div className="space-y-3">
                   <span className="text-xs font-bold uppercase tracking-wider text-foreground flex items-center gap-1.5">
-                    <User className="size-3.5 text-accent" /> 1. Customer &amp; Pickup Contact
+                    <User className="size-3.5 text-accent" /> 1. Customer Contact Information
                   </span>
-                  <div>
-                    <label className="text-[11px] font-semibold text-muted-foreground block mb-1">Full Name *</label>
-                    <input
-                      type="text"
-                      required
-                      value={customerName}
-                      onChange={(e) => setCustomerName(e.target.value)}
-                      placeholder="Eleanor Vance"
-                      className="w-full rounded-md border border-input bg-background p-2.5 text-xs focus:border-accent focus:outline-none"
-                    />
-                  </div>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     <div>
                       <label className="text-[11px] font-semibold text-muted-foreground block mb-1">
-                        Phone (For SMS Ready Alert) *
+                        Full Name <span className="text-red-500">*</span>
                       </label>
                       <input
-                        type="tel"
+                        type="text"
                         required
-                        value={customerPhone}
-                        onChange={(e) => setCustomerPhone(e.target.value)}
-                        placeholder="(703) 555-0199"
+                        value={customerName}
+                        onChange={(e) => setCustomerName(e.target.value)}
+                        placeholder="Eleanor Vance"
                         className="w-full rounded-md border border-input bg-background p-2.5 text-xs focus:border-accent focus:outline-none"
                       />
                     </div>
                     <div>
                       <label className="text-[11px] font-semibold text-muted-foreground block mb-1">
-                        Email (Order Receipt) *
+                        Email (Order Receipt) <span className="text-red-500">*</span>
                       </label>
                       <input
                         type="email"
@@ -2292,10 +2296,121 @@ function Index() {
                   </div>
                 </div>
 
-                {/* Section 2: Pickup Slot Window */}
+                {/* Section 2: Billing & Order Address */}
+                <div className="space-y-3">
+                  <span className="text-xs font-bold uppercase tracking-wider text-foreground flex items-center gap-1.5">
+                    <MapPin className="size-3.5 text-accent" /> 2. Billing &amp; Order Address
+                  </span>
+
+                  {/* Country * */}
+                  <div>
+                    <label className="text-[11px] font-semibold text-muted-foreground block mb-1">
+                      Country <span className="text-red-500">*</span>
+                    </label>
+                    <select
+                      value={billingCountry}
+                      onChange={(e) => setBillingCountry(e.target.value)}
+                      required
+                      className="w-full rounded-md border border-input bg-background p-2.5 text-xs font-medium focus:border-accent focus:outline-none cursor-pointer"
+                    >
+                      <option value="United States (US)">United States (US)</option>
+                    </select>
+                  </div>
+
+                  {/* Street address * */}
+                  <div>
+                    <label className="text-[11px] font-semibold text-muted-foreground block mb-1">
+                      Street address <span className="text-red-500">*</span>
+                    </label>
+                    <input
+                      type="text"
+                      required
+                      value={streetAddress}
+                      onChange={(e) => setStreetAddress(e.target.value)}
+                      placeholder="House number and street name"
+                      className="w-full rounded-md border border-input bg-background p-2.5 text-xs focus:border-accent focus:outline-none"
+                    />
+                  </div>
+
+                  {/* Apartment, suite, unit etc. (optional) */}
+                  <div>
+                    <label className="text-[11px] font-semibold text-muted-foreground block mb-1">
+                      Apartment, suite, unit etc. (optional) <span className="text-muted-foreground/70 font-normal">(optional)</span>
+                    </label>
+                    <input
+                      type="text"
+                      value={apartmentSuite}
+                      onChange={(e) => setApartmentSuite(e.target.value)}
+                      placeholder="Apartment, suite, unit etc. (optional)"
+                      className="w-full rounded-md border border-input bg-background p-2.5 text-xs focus:border-accent focus:outline-none"
+                    />
+                  </div>
+
+                  {/* Town / City *, State *, ZIP * */}
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                    <div>
+                      <label className="text-[11px] font-semibold text-muted-foreground block mb-1">
+                        Town / City <span className="text-red-500">*</span>
+                      </label>
+                      <input
+                        type="text"
+                        required
+                        value={townCity}
+                        onChange={(e) => setTownCity(e.target.value)}
+                        placeholder="Arlington"
+                        className="w-full rounded-md border border-input bg-background p-2.5 text-xs focus:border-accent focus:outline-none"
+                      />
+                    </div>
+                    <div>
+                      <label className="text-[11px] font-semibold text-muted-foreground block mb-1">
+                        State <span className="text-red-500">*</span>
+                      </label>
+                      <select
+                        value={stateProvince}
+                        onChange={(e) => setStateProvince(e.target.value)}
+                        required
+                        className="w-full rounded-md border border-input bg-background p-2.5 text-xs font-medium focus:border-accent focus:outline-none cursor-pointer"
+                      >
+                        <option value="Virginia">Virginia</option>
+                        <option value="District of Columbia">District of Columbia</option>
+                        <option value="Maryland">Maryland</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label className="text-[11px] font-semibold text-muted-foreground block mb-1">
+                        ZIP <span className="text-red-500">*</span>
+                      </label>
+                      <input
+                        type="text"
+                        required
+                        value={zipCode}
+                        onChange={(e) => setZipCode(e.target.value)}
+                        placeholder="22207"
+                        className="w-full rounded-md border border-input bg-background p-2.5 text-xs focus:border-accent focus:outline-none"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Phone * */}
+                  <div>
+                    <label className="text-[11px] font-semibold text-muted-foreground block mb-1">
+                      Phone <span className="text-red-500">*</span>
+                    </label>
+                    <input
+                      type="tel"
+                      required
+                      value={customerPhone}
+                      onChange={(e) => setCustomerPhone(e.target.value)}
+                      placeholder="(703) 555-0199"
+                      className="w-full rounded-md border border-input bg-background p-2.5 text-xs focus:border-accent focus:outline-none"
+                    />
+                  </div>
+                </div>
+
+                {/* Section 3: Pickup Slot Window */}
                 <div>
                   <label className="text-xs font-bold uppercase tracking-wider text-foreground flex items-center gap-1.5 mb-2">
-                    <Clock3 className="size-3.5 text-accent" /> 2. Pickup Window (2150 N. Culpeper St)
+                    <Clock3 className="size-3.5 text-accent" /> 3. Pickup Window (2150 N. Culpeper St)
                   </label>
                   <select
                     value={pickupTime}
@@ -2310,10 +2425,24 @@ function Index() {
                   </select>
                 </div>
 
-                {/* Section 3: Payment Method Selection */}
+                {/* Section 4: Special Notes of the Customer */}
+                <div className="space-y-1.5">
+                  <label className="text-xs font-bold uppercase tracking-wider text-foreground flex items-center gap-1.5">
+                    <FileText className="size-3.5 text-accent" /> 4. Special Notes of the Customer
+                  </label>
+                  <textarea
+                    rows={3}
+                    value={orderNotes}
+                    onChange={(e) => setOrderNotes(e.target.value)}
+                    placeholder="Notes about your order, e.g. special delivery or pickup instructions, allergy precautions, message for the baker."
+                    className="w-full rounded-md border border-input bg-background p-2.5 text-xs focus:border-accent focus:outline-none resize-none leading-relaxed"
+                  />
+                </div>
+
+                {/* Section 5: Payment Method Selection */}
                 <div className="space-y-3">
                   <span className="text-xs font-bold uppercase tracking-wider text-foreground flex items-center gap-1.5">
-                    <CreditCard className="size-3.5 text-accent" /> 3. Payment Method (Demo Gateway)
+                    <CreditCard className="size-3.5 text-accent" /> 5. Payment Method (Demo Gateway)
                   </span>
                   <div className="grid grid-cols-3 gap-2">
                     <button
@@ -2423,11 +2552,23 @@ function Index() {
                   Your order ticket <strong className="text-foreground">{confirmedOrderId}</strong> has been received by Heidelberg Pastry Shoppe.
                 </p>
 
-                <div className="rounded-xl border border-border bg-secondary/50 p-4 text-left text-xs space-y-2 max-w-md mx-auto">
+                <div className="rounded-xl border border-border bg-secondary/50 p-4 text-left text-xs space-y-2.5 max-w-md mx-auto">
                   <div className="flex justify-between">
                     <span className="text-muted-foreground">Customer:</span>
                     <strong className="text-foreground">{customerName || "Valued Customer"}</strong>
                   </div>
+                  <div className="flex justify-between">
+                    <span className="text-muted-foreground">Phone:</span>
+                    <span className="font-mono font-bold text-accent">{customerPhone || "(703) 555-0199"}</span>
+                  </div>
+                  {streetAddress && (
+                    <div className="flex justify-between items-start gap-3">
+                      <span className="text-muted-foreground shrink-0">Address:</span>
+                      <span className="text-right font-medium text-foreground">
+                        {streetAddress}{apartmentSuite ? `, ${apartmentSuite}` : ""}, {townCity}, {stateProvince} {zipCode}, {billingCountry}
+                      </span>
+                    </div>
+                  )}
                   <div className="flex justify-between">
                     <span className="text-muted-foreground">Pickup Time:</span>
                     <strong className="text-foreground">{pickupTime}</strong>
@@ -2436,10 +2577,14 @@ function Index() {
                     <span className="text-muted-foreground">Pickup Location:</span>
                     <span className="font-semibold text-foreground">2150 N. Culpeper St, Counter #1</span>
                   </div>
-                  <div className="flex justify-between border-t border-border pt-2">
-                    <span className="text-muted-foreground">SMS Alert Sent To:</span>
-                    <span className="font-mono font-bold text-accent">{customerPhone || "(703) 555-0199"}</span>
-                  </div>
+                  {orderNotes && (
+                    <div className="border-t border-border/80 pt-2 text-left">
+                      <span className="text-muted-foreground block text-[11px] mb-0.5">Special Customer Notes:</span>
+                      <p className="font-medium text-foreground italic bg-background/80 p-2 rounded border border-border/60">
+                        "{orderNotes}"
+                      </p>
+                    </div>
+                  )}
                 </div>
 
                 <Button
