@@ -1,4 +1,4 @@
-import { Link } from "@tanstack/react-router";
+
 import logoAsset from "@/assets/heidelberg-logo.png.asset.json";
 import {
   ADDRESS_LINE1,
@@ -32,9 +32,9 @@ export function SiteFooter() {
           <ul className="mt-4 space-y-2 text-sm text-primary-muted">
             {categories.slice(0, 6).map((c) => (
               <li key={c.slug}>
-                <Link to={`/shop/${c.slug}`} className="hover:text-primary-foreground">
+                <a href={`/shop/${c.slug as any}`} className="hover:text-primary-foreground">
                   {c.name}
-                </Link>
+                </a>
               </li>
             ))}
           </ul>
@@ -43,13 +43,13 @@ export function SiteFooter() {
         <div>
           <h2 className="font-display text-base font-bold">Information</h2>
           <ul className="mt-4 space-y-2 text-sm text-primary-muted">
-            <li><Link to="/about-us" className="hover:text-primary-foreground">About Us</Link></li>
-            <li><Link to="/price-sheets" className="hover:text-primary-foreground">Price Sheets</Link></li>
-            <li><Link to="/policies" className="hover:text-primary-foreground">Policies</Link></li>
-            <li><Link to="/shipping" className="hover:text-primary-foreground">Shipping</Link></li>
-            <li><Link to="/press" className="hover:text-primary-foreground">Press</Link></li>
-            <li><Link to="/employment" className="hover:text-primary-foreground">Employment</Link></li>
-            <li><Link to="/contact" className="hover:text-primary-foreground">Contact</Link></li>
+            <li><a href={"/about-us" as any} className="hover:text-primary-foreground">About Us</a></li>
+            <li><a href={"/price-sheets" as any} className="hover:text-primary-foreground">Price Sheets</a></li>
+            <li><a href={"/policies" as any} className="hover:text-primary-foreground">Policies</a></li>
+            <li><a href={"/shipping" as any} className="hover:text-primary-foreground">Shipping</a></li>
+            <li><a href={"/press" as any} className="hover:text-primary-foreground">Press</a></li>
+            <li><a href={"/employment" as any} className="hover:text-primary-foreground">Employment</a></li>
+            <li><a href={"/contact" as any} className="hover:text-primary-foreground">Contact</a></li>
           </ul>
         </div>
 
