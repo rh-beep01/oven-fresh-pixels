@@ -42,6 +42,12 @@ import heroImage from "@/assets/heidelberg-hero.jpg";
 import cakesImage from "@/assets/cakes-category.jpg";
 import breadsImage from "@/assets/breads-category.jpg";
 import pastriesImage from "@/assets/pastries-category.jpg";
+import goldCakeImg from "@/assets/cake-gold-anniversary.jpg";
+import frozenCakeImg from "@/assets/cake-frozen-birthday.jpg";
+import pinkCakeImg from "@/assets/cake-pink-first-birthday.jpg";
+import croissantBasketImg from "@/assets/croissant-basket.jpg";
+import chocolateSwirlCookiesImg from "@/assets/pastry-chocolate-swirl-cookies.jpg";
+import florentineCookiesImg from "@/assets/pastry-florentine-cookies.jpg";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -81,7 +87,58 @@ export interface BakeryItem {
 }
 
 const bakeryMenu: BakeryItem[] = [
-  // --- REAL CAKES ---
+  // --- REAL REMASTERED CAKES & TORTES ---
+  {
+    id: "cake-gold-milestone",
+    name: "Golden Milestone Celebration Torte",
+    germanName: "Goldene Festtagstorte",
+    category: "cakes",
+    price: 58.00,
+    badge: "Remastered Signature",
+    description: "Shimmering edible gold luster over European buttercream with hand-piped golden rosettes and custom gold script lettering. Perfect for 50th, 70th, or anniversary milestones.",
+    image: goldCakeImg,
+    servings: '8" round (12-16 servings)',
+    isFeatured: true,
+    sizeOptions: [
+      { name: '8" Round (12-16 servings)', priceDelta: 0, servings: '12-16 servings' },
+      { name: '10" Round (20-25 servings)', priceDelta: 28.00, servings: '20-25 servings' },
+      { name: '1/4 Sheet (25-30 servings)', priceDelta: 47.00, servings: '25-30 servings' },
+      { name: '1/2 Sheet (50-60 servings)', priceDelta: 112.00, servings: '50-60 servings' }
+    ]
+  },
+  {
+    id: "cake-pink-first-birthday",
+    name: "Handcrafted 2-Tier First Birthday Cake",
+    germanName: "Zweistöckige Festtorte mit Schleife",
+    category: "cakes",
+    price: 78.00,
+    badge: "2-Tier Masterpiece",
+    description: "Pastel pink fondant with delicate gold sugar pearls, beaded royal icing borders, custom milestone number medallion, and a handcrafted pink-and-white sugar ribbon bow.",
+    image: pinkCakeImg,
+    servings: "2-Tier (25-30 servings)",
+    isFeatured: true,
+    sizeOptions: [
+      { name: "2-Tier Small (20-25 servings)", priceDelta: 0, servings: "20-25 servings" },
+      { name: "2-Tier Medium (30-35 servings)", priceDelta: 35.00, servings: "30-35 servings" },
+      { name: "3-Tier Grand (55-65 servings)", priceDelta: 115.00, servings: "55-65 servings" }
+    ]
+  },
+  {
+    id: "cake-frozen-themed",
+    name: "Custom 2-Tier Themed Celebration Cake",
+    germanName: "Individuelle 2-Stöckige Thementorte",
+    category: "cakes",
+    price: 85.00,
+    badge: "Hand-Piped Icicles",
+    description: "Two-tiered celebration cake featuring ombré blue frosting, hand-piped white icicle drips, edible snowflake plaques, and custom personalized picture topper.",
+    image: frozenCakeImg,
+    servings: "2-Tier (25-30 servings)",
+    isFeatured: true,
+    sizeOptions: [
+      { name: "2-Tier (25-30 servings)", priceDelta: 0, servings: "25-30 servings" },
+      { name: "2-Tier Large (35-42 servings)", priceDelta: 40.00, servings: "35-42 servings" }
+    ]
+  },
   {
     id: "cake-black-forest",
     name: "Authentic Black Forest Cake",
@@ -328,6 +385,57 @@ const bakeryMenu: BakeryItem[] = [
   },
 
   // --- REAL EUROPEAN PASTRIES & SWEETS ---
+  {
+    id: "pastry-croissants",
+    name: "Artisan Bavarian Butter Croissants",
+    germanName: "Bayerische Butterhörnchen",
+    category: "pastries",
+    price: 4.25,
+    badge: "Remastered Signature",
+    description: "Golden, multi-layered Viennoiserie pastry folded with pure European butter for a crisp flaky exterior and an airy, melt-in-your-mouth interior.",
+    image: croissantBasketImg,
+    servings: "Baked fresh 5:00 AM daily",
+    isFeatured: true,
+    packOptions: [
+      { name: "Single Warm Croissant", priceDelta: 0 },
+      { name: "4-Pack Breakfast Basket", priceDelta: 12.25 },
+      { name: "Baker's Half-Dozen (6 Pack)", priceDelta: 19.75 },
+      { name: "Baker's Dozen (13 Pack)", priceDelta: 43.75 }
+    ]
+  },
+  {
+    id: "pastry-chocolate-swirl",
+    name: "European Chocolate Ganache Swirl Cookies",
+    germanName: "Schoko-Spritzgebäck mit Ganache",
+    category: "pastries",
+    price: 13.50,
+    badge: "Belgian Dark Ganache",
+    description: "Buttery, crumbly spritz shortbread rounds generously piped with high-gloss swirls of rich dark Belgian chocolate ganache and dusted with powdered sugar.",
+    image: chocolateSwirlCookiesImg,
+    servings: "4-Pack on slate board",
+    isFeatured: true,
+    packOptions: [
+      { name: "4-Pack Specialty Box", priceDelta: 0 },
+      { name: "8-Pack Gathering Tray", priceDelta: 12.50 },
+      { name: "Baker's Dozen (13 Cookies)", priceDelta: 25.50 }
+    ]
+  },
+  {
+    id: "pastry-florentine",
+    name: "Authentic Florentiner Almond Lace Cookies",
+    germanName: "Florentiner Mandelgebäck",
+    category: "pastries",
+    price: 16.00,
+    badge: "Caramelized Almond Lace",
+    description: "Crisp, wafer-thin lace cookies made with toasted sliced almonds, honey, and orange zest, half-dipped in decadent Belgian dark chocolate and filled with sweet vanilla cream.",
+    image: florentineCookiesImg,
+    servings: "1/2 lb Gift Selection (approx 10-12 pcs)",
+    isFeatured: true,
+    packOptions: [
+      { name: "1/2 lb Bakery Box", priceDelta: 0 },
+      { name: "1 lb Gift Tin", priceDelta: 15.00 }
+    ]
+  },
   {
     id: "pastry-apple-strudel",
     name: "Authentic Bavarian Apple Strudel",
