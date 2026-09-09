@@ -30,7 +30,7 @@ import {
   Instagram,
   Send
 } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import officialLogo from "@/assets/heidelberg-official-logo.png";
 import heroImage from "@/assets/heidelberg-hero.jpg";
@@ -402,7 +402,20 @@ function Index() {
   const [activeTracking, setActiveTracking] = useState<OrderTrackingData>(mockOrders["#HB-1975"]!);
   const [notificationToast, setNotificationToast] = useState<string | null>(null);
 
-  // Helper to add item to cart
+  // Toast & Item Added Animation States
+  const [toastItem, setToastItem] = useState<{ item: BakeryItem; count: number } | null>(null);
+  const [justAddedId, setJustAddedId] = useState<string | null>(null);
+
+  // Auto-dismiss toast after 4.5 seconds of inactivity
+  useEffect(() => {
+    if (!toastItem) return undefined;
+    const timer = setTimeout(() => {
+      setToastItem(null);
+    }, 4500);
+    return () => clearTimeout(timer);
+  }, [toastItem]);
+
+  // Helper to add item to cart WITHOUT interrupting shopping flow
   const addToCart = (item: BakeryItem) => {
     setCart((prev) => {
       const existing = prev.find((i) => i.item.id === item.id);
@@ -411,7 +424,16 @@ function Index() {
       }
       return [...prev, { item, quantity: 1 }];
     });
-    setCartOpen(true);
+
+    // Provide visual button micro-animation
+    setJustAddedId(item.id);
+    setTimeout(() => {
+      setJustAddedId((curr) => (curr === item.id ? null : curr));
+    }, 1800);
+
+    // Show floating banner with instant checkout action
+    const currentQty = cart.find((i) => i.item.id === item.id)?.quantity || 0;
+    setToastItem({ item, count: currentQty + 1 });
   };
 
   const updateQuantity = (id: string, delta: number) => {
@@ -530,33 +552,75 @@ function Index() {
 
       {/* Main Navigation with OFFICIAL WEBSITE LOGO */}
       <header className="sticky top-0 z-40 border-b border-border bg-background/95 backdrop-blur-md shadow-xs">
-        <div className="mx-auto flex h-20 max-w-7xl items-center justify-between px-5 lg:px-8">
-          <a href="#top" aria-label="Heidelberg Pastry Shoppe home" className="flex items-center gap-3 shrink-0 py-1">
+        <div className="mx-auto flex h-20 max-w-7xl items-center justify-between gap-3 sm:gap-4 px-4 sm:px-6 lg:px-8">
+          {/* Official Brand Logo - Left aligned, fixed shrink-0 */}
+          <a href="#top" aria-label="Heidelberg Pastry Shoppe home" className="flex items-center shrink-0 py-1">
             <img
               src={officialLogo}
               alt="Heidelberg Pastry Shoppe Official Logo"
-              className="h-13 w-auto object-contain transition-transform hover:scale-102"
-              width="220"
-              height="60"
+              className="h-10 sm:h-12 w-auto object-contain transition-transform hover:scale-102"
+              width="190"
+              height="50"
             />
           </a>
 
-          <nav className="hidden items-center gap-6 lg:flex" aria-label="Main navigation">
-            <a className="nav-link" href="#cakes-highlight">Cakes Showcase</a>
-            <a className="nav-link" href="#menu">Bakery Menu & Pricing</a>
-            <a className="nav-link" href="#cake-builder">Custom Cake Studio</a>
-            <a className="nav-link" href="#track-order">Live Order Tracker</a>
-            <a className="nav-link" href="#reviews">Reviews</a>
-            <a className="nav-link" href="#story">Our Story</a>
-            <a className="nav-link" href="#visit">Visit & Hours</a>
+          {/* Navigation - Centered, Single Line, Refined & Crisp */}
+          <nav
+            className="hidden items-center justify-center flex-1 mx-2 lg:flex whitespace-nowrap gap-1.5 xl:gap-5"
+            aria-label="Main navigation"
+          >
+            <a
+              className="nav-link px-2 py-1 text-xs xl:text-sm font-semibold text-foreground/85 hover:text-accent transition-colors whitespace-nowrap"
+              href="#cakes-highlight"
+            >
+              Cakes
+            </a>
+            <a
+              className="nav-link px-2 py-1 text-xs xl:text-sm font-semibold text-foreground/85 hover:text-accent transition-colors whitespace-nowrap"
+              href="#menu"
+            >
+              Menu &amp; Pricing
+            </a>
+            <a
+              className="nav-link px-2 py-1 text-xs xl:text-sm font-semibold text-foreground/85 hover:text-accent transition-colors whitespace-nowrap"
+              href="#cake-builder"
+            >
+              Custom Cakes
+            </a>
+            <a
+              className="nav-link px-2 py-1 text-xs xl:text-sm font-semibold text-foreground/85 hover:text-accent transition-colors whitespace-nowrap"
+              href="#track-order"
+            >
+              Track Order
+            </a>
+            <a
+              className="nav-link px-2 py-1 text-xs xl:text-sm font-semibold text-foreground/85 hover:text-accent transition-colors whitespace-nowrap"
+              href="#reviews"
+            >
+              Reviews
+            </a>
+            <a
+              className="nav-link px-2 py-1 text-xs xl:text-sm font-semibold text-foreground/85 hover:text-accent transition-colors whitespace-nowrap"
+              href="#story"
+            >
+              Our Story
+            </a>
+            <a
+              className="nav-link px-2 py-1 text-xs xl:text-sm font-semibold text-foreground/85 hover:text-accent transition-colors whitespace-nowrap"
+              href="#visit"
+            >
+              Visit &amp; Hours
+            </a>
           </nav>
 
-          <div className="flex items-center gap-3">
+          {/* Right Action Items: Phone (Single-line guaranteed) + Order Tray */}
+          <div className="flex items-center gap-2 sm:gap-3 shrink-0">
             <a
               href="tel:7035278394"
-              className="hidden items-center gap-1.5 text-xs font-semibold text-foreground/80 hover:text-accent md:inline-flex"
+              className="hidden items-center gap-1.5 text-xs font-semibold text-foreground/90 hover:text-accent md:inline-flex whitespace-nowrap shrink-0 px-2.5 py-1.5 rounded-full border border-border/70 bg-muted/30 transition-colors hover:border-accent"
             >
-              <Phone className="size-3.5 text-accent" /> (703) 527-8394
+              <Phone className="size-3.5 text-accent shrink-0" />
+              <span className="whitespace-nowrap font-mono tracking-tight">(703) 527-8394</span>
             </a>
 
             {/* Cart Trigger Button */}
@@ -564,7 +628,7 @@ function Index() {
               variant="bakery"
               size="sm"
               onClick={() => setCartOpen(true)}
-              className="relative flex items-center gap-2 font-semibold text-xs h-10 px-4 cursor-pointer"
+              className="relative flex items-center gap-2 font-semibold text-xs h-10 px-3.5 sm:px-4 cursor-pointer whitespace-nowrap shrink-0"
             >
               <ShoppingBag className="size-4" />
               <span className="hidden sm:inline">Order Tray</span>
@@ -578,7 +642,7 @@ function Index() {
             <Button
               variant="ghost"
               size="icon"
-              className="lg:hidden cursor-pointer"
+              className="lg:hidden cursor-pointer shrink-0"
               aria-label={mobileNavOpen ? "Close menu" : "Open menu"}
               onClick={() => setMobileNavOpen((open) => !open)}
             >
@@ -591,14 +655,34 @@ function Index() {
         {mobileNavOpen && (
           <nav className="border-t border-border bg-background px-6 py-5 shadow-xl lg:hidden animate-in slide-in-from-top-4">
             <div className="flex flex-col gap-4 text-sm font-semibold">
-              <a href="#cakes-highlight" onClick={() => setMobileNavOpen(false)} className="py-1">Celebration Cakes</a>
-              <a href="#menu" onClick={() => setMobileNavOpen(false)} className="py-1">Bakery Menu & Pricing</a>
-              <a href="#cake-builder" onClick={() => setMobileNavOpen(false)} className="py-1">Custom Cake Studio</a>
-              <a href="#track-order" onClick={() => setMobileNavOpen(false)} className="py-1">Live Order Tracker</a>
-              <a href="#reviews" onClick={() => setMobileNavOpen(false)} className="py-1">Customer Reviews</a>
-              <a href="#story" onClick={() => setMobileNavOpen(false)} className="py-1">Our Heritage (Since 1975)</a>
-              <a href="#visit" onClick={() => setMobileNavOpen(false)} className="py-1">Hours & Location</a>
-              <div className="pt-2 border-t border-border">
+              <a href="#cakes-highlight" onClick={() => setMobileNavOpen(false)} className="py-1 hover:text-accent">
+                Cakes Showcase
+              </a>
+              <a href="#menu" onClick={() => setMobileNavOpen(false)} className="py-1 hover:text-accent">
+                Bakery Menu &amp; Pricing
+              </a>
+              <a href="#cake-builder" onClick={() => setMobileNavOpen(false)} className="py-1 hover:text-accent">
+                Custom Cake Studio
+              </a>
+              <a href="#track-order" onClick={() => setMobileNavOpen(false)} className="py-1 hover:text-accent">
+                Live Order Tracker
+              </a>
+              <a href="#reviews" onClick={() => setMobileNavOpen(false)} className="py-1 hover:text-accent">
+                Customer Reviews
+              </a>
+              <a href="#story" onClick={() => setMobileNavOpen(false)} className="py-1 hover:text-accent">
+                Our Heritage (Since 1975)
+              </a>
+              <a href="#visit" onClick={() => setMobileNavOpen(false)} className="py-1 hover:text-accent">
+                Hours &amp; Location
+              </a>
+              <div className="pt-3 border-t border-border flex flex-col gap-3">
+                <a
+                  href="tel:7035278394"
+                  className="flex items-center gap-2 text-xs font-semibold text-foreground/90 py-1"
+                >
+                  <Phone className="size-3.5 text-accent" /> (703) 527-8394
+                </a>
                 <Button
                   onClick={() => {
                     setMobileNavOpen(false);
@@ -607,7 +691,7 @@ function Index() {
                   variant="bakery"
                   className="w-full justify-center cursor-pointer"
                 >
-                  View Order ({cartItemCount} items)
+                  View Order Tray ({cartItemCount} items)
                 </Button>
               </div>
             </div>
@@ -772,12 +856,24 @@ function Index() {
                       ${cake.price.toFixed(2)}
                     </span>
                     <Button
-                      variant="bakery"
+                      variant={justAddedId === cake.id ? "secondary" : "bakery"}
                       size="sm"
                       onClick={() => addToCart(cake)}
-                      className="text-xs h-8 px-3 cursor-pointer"
+                      className={`text-xs h-8 px-3 cursor-pointer transition-all ${
+                        justAddedId === cake.id
+                          ? "bg-emerald-600 hover:bg-emerald-700 text-white font-bold ring-2 ring-emerald-400 scale-105"
+                          : ""
+                      }`}
                     >
-                      <Plus className="size-3" /> Add
+                      {justAddedId === cake.id ? (
+                        <span className="flex items-center gap-1">
+                          <CheckCircle2 className="size-3.5 animate-in zoom-in" /> Added!
+                        </span>
+                      ) : (
+                        <span className="flex items-center gap-1">
+                          <Plus className="size-3" /> Add
+                        </span>
+                      )}
                     </Button>
                   </div>
                 </div>
@@ -890,12 +986,24 @@ function Index() {
                     </div>
 
                     <Button
-                      variant="bakery"
+                      variant={justAddedId === item.id ? "secondary" : "bakery"}
                       size="sm"
                       onClick={() => addToCart(item)}
-                      className="font-semibold text-xs cursor-pointer shadow-xs"
+                      className={`font-semibold text-xs cursor-pointer shadow-xs transition-all ${
+                        justAddedId === item.id
+                          ? "bg-emerald-600 hover:bg-emerald-700 text-white font-bold ring-2 ring-emerald-400 scale-105"
+                          : ""
+                      }`}
                     >
-                      <Plus className="size-3.5" /> Add
+                      {justAddedId === item.id ? (
+                        <span className="flex items-center gap-1">
+                          <CheckCircle2 className="size-3.5 animate-in zoom-in" /> Added!
+                        </span>
+                      ) : (
+                        <span className="flex items-center gap-1">
+                          <Plus className="size-3.5" /> Add
+                        </span>
+                      )}
                     </Button>
                   </div>
                 </div>
@@ -2160,6 +2268,50 @@ function Index() {
             )}
           </div>
         </div>
+      )}
+
+      {/* FLOATING TOAST: Non-blocking Add to Cart feedback with instant checkout option */}
+      {toastItem && (
+        <aside
+          aria-label="Item added notification"
+          className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 flex max-w-lg w-[94%] sm:w-auto items-center justify-between gap-3 sm:gap-4 rounded-xl border border-emerald-500/40 bg-zinc-950/95 text-white p-3 sm:px-5 sm:py-3.5 shadow-2xl backdrop-blur-md animate-in slide-in-from-bottom-5 duration-300 ring-1 ring-emerald-500/30"
+        >
+          <div className="flex items-center gap-3 min-w-0">
+            <div className="flex size-8 sm:size-9 shrink-0 items-center justify-center rounded-full bg-emerald-500/20 text-emerald-400">
+              <CheckCircle2 className="size-4 sm:size-5 animate-in zoom-in" />
+            </div>
+            <div className="min-w-0">
+              <p className="text-xs font-bold text-emerald-400 flex items-center gap-1.5">
+                <span>Added to Order Tray!</span>
+                <span className="text-[10px] bg-emerald-900/80 text-emerald-200 px-1.5 py-0.5 rounded font-mono font-bold">
+                  {cartItemCount} item{cartItemCount > 1 ? "s" : ""}
+                </span>
+              </p>
+              <p className="text-xs text-zinc-300 font-medium truncate max-w-[170px] sm:max-w-xs">
+                {toastItem.item.name} (${toastItem.item.price.toFixed(2)})
+              </p>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-2 shrink-0">
+            <button
+              onClick={() => {
+                setToastItem(null);
+                setCartOpen(true);
+              }}
+              className="rounded-lg bg-accent px-3 py-1.5 sm:px-4 sm:py-2 text-xs font-bold text-accent-foreground shadow-md hover:bg-primary hover:text-primary-foreground transition-colors cursor-pointer flex items-center gap-1.5 whitespace-nowrap"
+            >
+              Go to Cart for Checkout &rarr;
+            </button>
+            <button
+              onClick={() => setToastItem(null)}
+              className="text-zinc-400 hover:text-white p-1 rounded-md cursor-pointer transition-colors"
+              aria-label="Close notification"
+            >
+              <X className="size-4" />
+            </button>
+          </div>
+        </aside>
       )}
     </main>
   );
