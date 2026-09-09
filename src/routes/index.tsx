@@ -46,6 +46,7 @@ import pastriesImage from "@/assets/pastries-category.jpg";
 import goldCakeImg from "@/assets/cake-gold-anniversary.jpg";
 import frozenCakeImg from "@/assets/cake-frozen-birthday.jpg";
 import pinkCakeImg from "@/assets/cake-pink-first-birthday.jpg";
+import customCakeRefImg from "@/assets/custom-photo-cake-reference.jpg";
 import croissantBasketImg from "@/assets/croissant-basket.jpg";
 import chocolateSwirlCookiesImg from "@/assets/pastry-chocolate-swirl-cookies.jpg";
 import florentineCookiesImg from "@/assets/pastry-florentine-cookies.jpg";
@@ -811,7 +812,7 @@ function Index() {
       price: cakeSize.price,
       badge: "Custom Handcrafted",
       description: `${cakeSponge} with ${cakeFilling}. Inscription: "${cakeInscription || "None"}". Pickup: ${cakeDate}.`,
-      image: cakesImage,
+      image: customCakeRefImg,
       servings: cakeSize.name
     };
 
@@ -1054,8 +1055,12 @@ function Index() {
               Fifty years of imported Bavarian flours, stone-hearth artisan loaves, and handcrafted celebration tortes. Choose your size and options online and skip the line at our Culpeper Street counter.
             </p>
             <div className="mt-8 flex flex-wrap items-center gap-4">
-              <Button asChild variant="bakery" size="lg" className="h-12 px-6 text-sm font-bold shadow-lg">
-                <a href="#menu">
+              <Button
+                asChild
+                size="lg"
+                className="h-12 px-7 text-sm font-extrabold bg-accent text-zinc-950 hover:bg-white hover:text-zinc-950 shadow-2xl border border-amber-300/50 cursor-pointer transition-all hover:scale-102"
+              >
+                <a href="#menu" className="flex items-center gap-2">
                   Browse Online Menu <ArrowRight className="size-4" />
                 </a>
               </Button>
@@ -1602,8 +1607,37 @@ function Index() {
             </div>
 
             {/* Right Live Spec & Order Summary */}
-            <div className="lg:col-span-5 rounded-xl border border-border bg-card p-6 shadow-sm space-y-6">
-              <div className="border-b border-border pb-4">
+            <div className="lg:col-span-5 rounded-xl border border-border bg-card p-6 shadow-sm space-y-5">
+              {/* Authentic Custom Cake Reference Card */}
+              <div className="space-y-2">
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-bold uppercase tracking-wider text-accent flex items-center gap-1.5">
+                    <Sparkles className="size-3.5 text-accent" /> Visual Design Reference
+                  </span>
+                  <span className="text-[10px] text-muted-foreground font-medium">Authentic Heidelberg Sheet Cake</span>
+                </div>
+                <div className="relative rounded-xl overflow-hidden border border-border bg-muted shadow-sm group">
+                  <div className="aspect-4/3 w-full overflow-hidden relative">
+                    <img
+                      src={customCakeRefImg}
+                      alt="Authentic Heidelberg custom photo and buttercream floral celebration cake example"
+                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-104"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/25 to-transparent pointer-events-none" />
+                    <span className="absolute top-2.5 left-2.5 rounded-full bg-accent px-2.5 py-0.5 text-[10px] font-extrabold text-zinc-950 shadow-md">
+                      Custom Photo &amp; Rose Piping
+                    </span>
+                    <div className="absolute bottom-2.5 left-3 right-3 text-white">
+                      <span className="font-display text-xs font-bold text-accent block">Sheet Cake with Edible Photo &amp; Yellow Sugar Roses</span>
+                      <p className="text-[10px] text-zinc-200 line-clamp-1">
+                        Upload your family photo or logo — hand-piped with authentic European buttercream.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="border-b border-border pb-3">
                 <span className="text-xs font-bold uppercase tracking-wider text-accent">Real-Time Cake Spec</span>
                 <h3 className="font-display text-xl font-bold mt-1">{cakeOccasion} Cake Design</h3>
                 <p className="text-xs text-muted-foreground mt-0.5">Handcrafted by Master Pastry Chefs in Arlington</p>
