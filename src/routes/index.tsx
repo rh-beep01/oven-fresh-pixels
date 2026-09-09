@@ -1105,7 +1105,7 @@ function Index() {
                   className="w-[310px] shrink-0 flex flex-col justify-between overflow-hidden rounded-xl border border-border bg-background shadow-sm hover:shadow-xl hover:border-accent transition-all group"
                 >
                   <div>
-                    <div className="relative aspect-16/10 overflow-hidden bg-muted">
+                    <div className="relative aspect-square overflow-hidden bg-muted">
                       <img
                         src={item.image}
                         alt={item.name}
@@ -1197,7 +1197,7 @@ function Index() {
                 className="group relative flex flex-col justify-between overflow-hidden rounded-xl border border-border bg-card shadow-xs transition-all hover:shadow-xl hover:border-accent"
               >
                 <div>
-                  <div className="relative aspect-4/3 overflow-hidden bg-muted">
+                  <div className="relative aspect-square overflow-hidden bg-muted">
                     <img
                       src={cake.image}
                       alt={cake.name}
@@ -1354,7 +1354,7 @@ function Index() {
                     className="group relative flex flex-col justify-between overflow-hidden rounded-xl border border-border bg-card shadow-xs transition-all hover:shadow-md hover:border-accent/70"
                   >
                     <div>
-                      <div className="relative aspect-16/10 overflow-hidden bg-muted">
+                      <div className="relative aspect-square overflow-hidden bg-muted">
                         <img
                           src={item.image}
                           alt={item.name}
