@@ -16,7 +16,8 @@ import {
   Sparkles, 
   Calendar, 
   ChefHat, 
-  Upload, 
+  Upload,
+  Camera, 
   ShieldCheck, 
   Plus, 
   Minus, 
@@ -650,6 +651,13 @@ function Index() {
   const [cakeFilling, setCakeFilling] = useState("Authentic Bavarian Vanilla Custard");
   const [cakeInscription, setCakeInscription] = useState("Happy 50th Birthday!");
   const [cakeDate, setCakeDate] = useState("Saturday (72 hrs notice)");
+  const [cakePhotoType, setCakePhotoType] = useState<"none" | "upload" | "stock">("none");
+  const [uploadedCakePhoto, setUploadedCakePhoto] = useState<string | null>(null);
+  const [uploadedCakeFileName, setUploadedCakeFileName] = useState<string>("");
+  const [stockCakePhoto, setStockCakePhoto] = useState<string>("Cinderella & Princess Theme");
+
+  const cakePhotoPrice = cakePhotoType !== "none" ? 20 : 0;
+  const currentCustomCakePrice = cakeSize.price + cakePhotoPrice;
 
   // Quick Contact Modal State
   const [contactModalOpen, setContactModalOpen] = useState(false);
@@ -1576,9 +1584,140 @@ function Index() {
                 </div>
               </div>
 
+              {/* 5. Edible Photo Print on Cake */}
+              <div className="space-y-3">
+                <div className="flex items-center justify-between">
+                  <label className="block text-xs font-bold uppercase tracking-wider text-foreground flex items-center gap-1.5">
+                    <Camera className="size-3.5 text-accent" /> 5. Edible Picture / Photo on Cake
+                  </label>
+                  <span className="text-[11px] font-bold text-accent bg-accent/15 px-2.5 py-0.5 rounded-full border border-accent/30">
+                    + $20.00 for Photo
+                  </span>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setCakePhotoType("none")}
+                    className={`rounded-md border p-2.5 text-left text-xs font-semibold transition-all cursor-pointer ${
+                      cakePhotoType === "none"
+                        ? "border-accent bg-accent/15 text-foreground ring-1 ring-accent"
+                        : "border-border text-muted-foreground hover:bg-muted"
+                    }`}
+                  >
+                    <span className="block font-bold">No Photo</span>
+                    <span className="text-muted-foreground text-[11px]">Hand-piped only (+$0)</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => setCakePhotoType("upload")}
+                    className={`rounded-md border p-2.5 text-left text-xs font-semibold transition-all cursor-pointer ${
+                      cakePhotoType === "upload"
+                        ? "border-accent bg-accent/15 text-foreground ring-1 ring-accent"
+                        : "border-border text-muted-foreground hover:bg-muted"
+                    }`}
+                  >
+                    <span className="block font-bold flex items-center gap-1">
+                      <Upload className="size-3 text-accent" /> Upload Your Photo
+                    </span>
+                    <span className="text-accent text-[11px] font-mono font-bold">+ $20.00</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => setCakePhotoType("stock")}
+                    className={`rounded-md border p-2.5 text-left text-xs font-semibold transition-all cursor-pointer ${
+                      cakePhotoType === "stock"
+                        ? "border-accent bg-accent/15 text-foreground ring-1 ring-accent"
+                        : "border-border text-muted-foreground hover:bg-muted"
+                    }`}
+                  >
+                    <span className="block font-bold">Bakery Stock Photo</span>
+                    <span className="text-accent text-[11px] font-mono font-bold">+ $20.00</span>
+                  </button>
+                </div>
+
+                {/* If Upload selected */}
+                {cakePhotoType === "upload" && (
+                  <div className="p-3.5 rounded-lg border border-accent/40 bg-accent/5 space-y-2.5 animate-in fade-in-50">
+                    <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+                      <div>
+                        <span className="text-xs font-bold text-foreground block">
+                          {uploadedCakeFileName ? "Custom Photo Selected:" : "Upload Your Photo to Print on the Cake:"}
+                        </span>
+                        <p className="text-[11px] text-muted-foreground">
+                          {uploadedCakeFileName ? uploadedCakeFileName : "Accepts JPG, PNG, WEBP (family portraits, kids, logos, themes)"}
+                        </p>
+                      </div>
+
+                      <label className="cursor-pointer shrink-0 inline-flex items-center gap-2 rounded-md border border-accent bg-accent px-3 py-1.5 text-xs font-bold text-zinc-950 hover:bg-white transition-all shadow-xs">
+                        <Upload className="size-3.5" />
+                        <span>{uploadedCakeFileName ? "Change Photo" : "Upload File (+ $20)"}</span>
+                        <input
+                          type="file"
+                          accept="image/*"
+                          className="hidden"
+                          onChange={(e) => {
+                            const file = e.target.files?.[0];
+                            if (file) {
+                              setUploadedCakeFileName(file.name);
+                              setUploadedCakePhoto(URL.createObjectURL(file));
+                            }
+                          }}
+                        />
+                      </label>
+                    </div>
+
+                    {uploadedCakePhoto && (
+                      <div className="flex items-center gap-3 pt-2 border-t border-border/60">
+                        <div className="size-12 rounded-md overflow-hidden border border-border shrink-0 bg-muted">
+                          <img src={uploadedCakePhoto} alt="Uploaded preview" className="w-full h-full object-cover" />
+                        </div>
+                        <div className="text-[11px] flex-1 min-w-0">
+                          <span className="font-semibold text-foreground block truncate">{uploadedCakeFileName}</span>
+                          <span className="text-accent font-semibold">Ready for edible frosting sheet print (+ $20.00)</span>
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setUploadedCakePhoto(null);
+                            setUploadedCakeFileName("");
+                          }}
+                          className="text-xs text-muted-foreground hover:text-red-500 cursor-pointer p-1"
+                        >
+                          Remove
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                {/* If Stock selected */}
+                {cakePhotoType === "stock" && (
+                  <div className="p-3.5 rounded-lg border border-accent/40 bg-accent/5 space-y-2 animate-in fade-in-50">
+                    <span className="text-xs font-bold text-foreground block">Select Bakery Celebration Theme (+ $20.00):</span>
+                    <select
+                      value={stockCakePhoto}
+                      onChange={(e) => setStockCakePhoto(e.target.value)}
+                      className="w-full rounded-md border border-input bg-background p-2 text-xs font-semibold focus:border-accent focus:outline-none cursor-pointer"
+                    >
+                      <option value="Cinderella & Princess Theme">Cinderella &amp; Princess Theme</option>
+                      <option value="Classic Birthday Balloons & Confetti">Classic Birthday Balloons &amp; Confetti</option>
+                      <option value="Golden Milestone Anniversary Ring">Golden Milestone Anniversary Ring</option>
+                      <option value="Graduation Cap & Diploma Scroll">Graduation Cap &amp; Diploma Scroll</option>
+                      <option value="Cute Baby Animals / First Birthday">Cute Baby Animals / First Birthday</option>
+                    </select>
+                    <p className="text-[10px] text-muted-foreground">
+                      Our pastry artists print the chosen theme onto an authentic Bavarian sugar icing sheet (+ $20.00).
+                    </p>
+                  </div>
+                )}
+              </div>
+
               <div>
                 <label className="block text-xs font-bold uppercase tracking-wider text-foreground mb-2">
-                  5. Hand-Piped Custom Inscription (Free)
+                  6. Hand-Piped Custom Inscription (Free)
                 </label>
                 <input
                   type="text"
@@ -1591,7 +1730,7 @@ function Index() {
 
               <div>
                 <label className="block text-xs font-bold uppercase tracking-wider text-foreground mb-2 flex items-center gap-1.5">
-                  <Calendar className="size-3.5 text-accent" /> 6. Required Pickup Date (72-Hour Lead Time)
+                  <Calendar className="size-3.5 text-accent" /> 7. Required Pickup Date (72-Hour Lead Time)
                 </label>
                 <select
                   value={cakeDate}
@@ -1608,31 +1747,39 @@ function Index() {
 
             {/* Right Live Spec & Order Summary */}
             <div className="lg:col-span-5 rounded-xl border border-border bg-card p-6 shadow-sm space-y-5">
-              {/* Authentic Custom Cake Reference Card */}
+              {/* Authentic Custom Cake Reference Card - 4:3 Box with Full Cake Visible */}
               <div className="space-y-2">
                 <div className="flex items-center justify-between">
                   <span className="text-xs font-bold uppercase tracking-wider text-accent flex items-center gap-1.5">
                     <Sparkles className="size-3.5 text-accent" /> Visual Design Reference
                   </span>
-                  <span className="text-[10px] text-muted-foreground font-medium">Authentic Heidelberg Sheet Cake</span>
+                  <span className="text-[10px] text-muted-foreground font-medium">4:3 Sheet Cake Reference</span>
                 </div>
-                <div className="relative rounded-xl overflow-hidden border border-border bg-muted shadow-sm group">
-                  <div className="aspect-4/3 w-full overflow-hidden relative">
-                    <img
-                      src={customCakeRefImg}
-                      alt="Authentic Heidelberg custom photo and buttercream floral celebration cake example"
-                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-104"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/25 to-transparent pointer-events-none" />
-                    <span className="absolute top-2.5 left-2.5 rounded-full bg-accent px-2.5 py-0.5 text-[10px] font-extrabold text-zinc-950 shadow-md">
-                      Custom Photo &amp; Rose Piping
+                <div className="relative aspect-4/3 w-full overflow-hidden rounded-xl border border-border bg-stone-100 dark:bg-stone-900/60 shadow-sm flex items-center justify-center group">
+                  <img
+                    src={uploadedCakePhoto || customCakeRefImg}
+                    alt="Authentic Heidelberg custom photo and buttercream floral celebration cake example"
+                    className="h-full w-full object-contain p-1.5 transition-transform duration-500 group-hover:scale-102"
+                  />
+                  <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/85 via-black/30 to-transparent p-3 pt-6 pointer-events-none" />
+                  <span className="absolute top-2.5 left-2.5 rounded-full bg-accent px-2.5 py-0.5 text-[10px] font-extrabold text-zinc-950 shadow-md">
+                    {cakePhotoType === "upload" && uploadedCakePhoto
+                      ? "Your Uploaded Photo Preview"
+                      : cakePhotoType === "stock"
+                      ? `Stock: ${stockCakePhoto}`
+                      : "Photo & Buttercream Roses"}
+                  </span>
+                  <div className="absolute bottom-2 left-3 right-3 text-white pointer-events-none">
+                    <span className="font-display text-xs font-bold text-accent block">
+                      {cakePhotoType === "upload" && uploadedCakePhoto
+                        ? `Custom Photo Sheet Cake (+$20.00)`
+                        : cakePhotoType === "stock"
+                        ? `Bakery Stock Theme: ${stockCakePhoto} (+$20.00)`
+                        : "Custom Edible Photo & Yellow Sugar Roses (+$20)"}
                     </span>
-                    <div className="absolute bottom-2.5 left-3 right-3 text-white">
-                      <span className="font-display text-xs font-bold text-accent block">Sheet Cake with Edible Photo &amp; Yellow Sugar Roses</span>
-                      <p className="text-[10px] text-zinc-200 line-clamp-1">
-                        Upload your family photo or logo — hand-piped with authentic European buttercream.
-                      </p>
-                    </div>
+                    <p className="text-[10px] text-zinc-200 line-clamp-1">
+                      Full sheet cake with hand-piped buttercream borders &amp; edible photo icing.
+                    </p>
                   </div>
                 </div>
               </div>
@@ -1657,6 +1804,16 @@ function Index() {
                   <span className="font-semibold text-foreground">{cakeFilling}</span>
                 </div>
                 <div className="flex justify-between py-1 border-b border-border/50">
+                  <span className="text-muted-foreground">Edible Photo Print:</span>
+                  <span className={`font-semibold ${cakePhotoType !== "none" ? "text-accent font-bold" : "text-foreground"}`}>
+                    {cakePhotoType === "upload"
+                      ? `Custom Upload (+$20.00)`
+                      : cakePhotoType === "stock"
+                      ? `Bakery Stock (+$20.00)`
+                      : "No Photo (Standard Hand-Piped)"}
+                  </span>
+                </div>
+                <div className="flex justify-between py-1 border-b border-border/50">
                   <span className="text-muted-foreground">Piped Message:</span>
                   <span className="font-semibold italic text-accent">"{cakeInscription || "None"}"</span>
                 </div>
@@ -1669,7 +1826,7 @@ function Index() {
               <div className="rounded-lg bg-secondary/80 p-4 border border-border flex items-center justify-between">
                 <div>
                   <span className="text-xs text-muted-foreground block">Estimated Cake Total</span>
-                  <span className="font-display text-2xl font-bold text-accent">${cakeSize.price}.00</span>
+                  <span className="font-display text-2xl font-bold text-accent">${currentCustomCakePrice}.00</span>
                 </div>
                 <Button
                   variant="bakery"
