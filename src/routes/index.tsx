@@ -24,7 +24,11 @@ import {
   Sliders,
   User,
   Mail,
-  Lock
+  Lock,
+  MessageCircle,
+  Facebook,
+  Instagram,
+  Send
 } from "lucide-react";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
@@ -37,7 +41,7 @@ import pastriesImage from "@/assets/pastries-category.jpg";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Heidelberg Pastry Shoppe | Modern German Bakery & Online Ordering" },
+      { title: "Heidelberg Pastry Shoppe | Modern German Bakery, Custom Cakes & Online Ordering" },
       { name: "description", content: "Order authentic German artisan breads, custom celebration cakes, fine European pastries and deli platters online. Serving Arlington, VA since 1975." },
       { property: "og:title", content: "Heidelberg Pastry Shoppe | Modern German Bakery & Custom Cakes" },
       { property: "og:description", content: "Authentic European baking crafted in Arlington since 1975. Order online with live order tracking and custom cake studio." },
@@ -48,12 +52,12 @@ export const Route = createFileRoute("/")({
   component: Index,
 });
 
-// Menu categories and items with realistic pricing & descriptions
+// REAL PRODUCTS EXTRACTED DIRECTLY FROM HEIDELBERG'S OFFICIAL CATALOG
 interface BakeryItem {
   id: string;
   name: string;
   germanName?: string;
-  category: "breads" | "cakes" | "pastries" | "deli";
+  category: "cakes" | "breads" | "pastries" | "deli";
   price: number;
   badge: string;
   description: string;
@@ -62,126 +66,254 @@ interface BakeryItem {
 }
 
 const bakeryMenu: BakeryItem[] = [
+  // --- REAL CAKES (PROMINENTLY FEATURED) ---
   {
-    id: "bread-1",
-    name: "Authentic German Bauernbrot",
-    germanName: "Rustikales Bauernbrot",
-    category: "breads",
-    price: 7.75,
-    badge: "Imported German Rye",
-    description: "Traditional sourdough rye loaf with a crisp, blistered crust and rich aromatic crumb. Sliced upon request.",
-    image: breadsImage,
-    servings: "2 lb round loaf",
-  },
-  {
-    id: "bread-2",
-    name: "Bavarian Soft Pretzels (Pack of 4)",
-    germanName: "Bayrische Laugenbrezeln",
-    category: "breads",
-    price: 10.50,
-    badge: "Baked Fresh at 6 AM",
-    description: "Hand-twisted authentic lye pretzels with coarse Bavarian salt, soft and chewy interior.",
-    image: breadsImage,
-    servings: "4 large pretzels",
-  },
-  {
-    id: "bread-3",
-    name: "Whole Grain Sunflower Rye",
-    germanName: "Sonnenblumenkernbrot",
-    category: "breads",
-    price: 8.25,
-    badge: "Whole Grain & Seeds",
-    description: "Nutrient-rich multigrain rye crusted with roasted sunflower seeds. Wolfgang's original 1975 recipe.",
-    image: breadsImage,
-    servings: "24 oz sliced loaf",
-  },
-  {
-    id: "cake-1",
-    name: "Black Forest Kirsch Torte",
+    id: "cake-black-forest",
+    name: "Authentic Black Forest Cake",
     germanName: "Schwarzwälder Kirschtorte",
     category: "cakes",
-    price: 46.00,
-    badge: "Heidelberg Signature",
-    description: "Layers of chocolate sponge infused with genuine Black Forest Kirschwasser, tart cherries, and real whipped cream.",
+    price: 46.95,
+    badge: "Heidelberg Master Signature",
+    description: "Layers of chocolate sponge infused with genuine Black Forest Kirschwasser cherry schnapps, tart cherries, and real whipped Bavarian cream.",
     image: cakesImage,
     servings: '8" round (12-14 servings)',
   },
   {
-    id: "cake-2",
-    name: "German Bee Sting Torte",
-    germanName: "Bienenstich Torte",
+    id: "cake-buttercream",
+    name: "Made-To-Order Buttercream Cake",
+    germanName: "Klassische Festtagstorte",
     category: "cakes",
-    price: 42.00,
-    badge: "Crowd Favorite",
-    description: "Brioche-style sweet cake topped with caramelized honey-glazed sliced almonds and filled with vanilla Bavarian cream.",
+    price: 46.95,
+    badge: "Customizable Design",
+    description: "Velvety European buttercream over golden vanilla or chocolate genoise. Hand-piped borders with fresh edible decor.",
     image: cakesImage,
-    servings: '9" round (10-12 servings)',
+    servings: '8" round (12-16 servings)',
   },
   {
-    id: "cake-3",
-    name: "Bavarian Hazelnut Mousse Cake",
-    germanName: "Haselnuss Mousse Torte",
+    id: "cake-dark-mousse",
+    name: "Dark Chocolate Mousse Cake",
+    germanName: "Schokoladenmousse Torte",
     category: "cakes",
     price: 48.00,
-    badge: "Gluten-Friendly Option",
-    description: "Roasted Piedmont hazelnut sponge filled with velvety praline mousse and dark chocolate glaze.",
+    badge: "Belgian Chocolate",
+    description: "Rich dark Belgian chocolate mousse layered with chocolate chiffon sponge, coated in a glossy dark chocolate mirror glaze.",
     image: cakesImage,
     servings: '8" round (10-12 servings)',
   },
   {
-    id: "pastry-1",
-    name: "Traditional Apple Strudel",
-    germanName: "Hausgemachter Apfelstrudel",
-    category: "pastries",
-    price: 6.25,
-    badge: "Warm & Flaky",
-    description: "Paper-thin stretched dough rolled with spiced tart apples, golden raisins, and toasted buttered breadcrumbs.",
-    image: pastriesImage,
-    servings: "Generous individual slice",
+    id: "cake-black-white-mousse",
+    name: "Black & White Mousse Cake",
+    germanName: "Duo-Schokoladen Torte",
+    category: "cakes",
+    price: 46.95,
+    badge: "Bestselling Duo",
+    description: "Harmonious layers of dark chocolate mousse and white chocolate Bavarian cream over a delicate sponge base.",
+    image: cakesImage,
+    servings: '8" round (12 servings)',
   },
   {
-    id: "pastry-2",
+    id: "cake-bienenstich",
+    name: "German Bee Sting Torte (Bienenstich)",
+    germanName: "Traditioneller Bienenstich",
+    category: "cakes",
+    price: 42.00,
+    badge: "Authentic German Recipe",
+    description: "Traditional sweet yeast cake crowned with caramelized honey-glazed sliced almonds, filled with rich vanilla Bavarian pastry cream.",
+    image: cakesImage,
+    servings: '9" round (10-12 servings)',
+  },
+  {
+    id: "cake-carrot",
+    name: "Traditional Spiced Carrot Cake",
+    germanName: "Rüblitorte mit Frischkäse",
+    category: "cakes",
+    price: 42.00,
+    badge: "Locally Sourced Spices",
+    description: "Moist cinnamon-spiced carrot sponge loaded with toasted walnuts and finished with silky cream cheese frosting.",
+    image: cakesImage,
+    servings: '8" round (12-14 servings)',
+  },
+  {
+    id: "cake-cheesecake-fruit",
+    name: "European Cheesecake with Fruit Topping",
+    germanName: "Käsekuchen mit Früchten",
+    category: "cakes",
+    price: 36.50,
+    badge: "Fresh Berry Glaze",
+    description: "Traditional dense European style cheesecake topped with fresh strawberries, blueberries, and apricot glaze.",
+    image: cakesImage,
+    servings: '8" round (10 servings)',
+  },
+  {
+    id: "cake-anniversary",
+    name: "Milestone & Anniversary Cake",
+    germanName: "Jubiläumstorte",
+    category: "cakes",
+    price: 75.00,
+    badge: "Milestone Centerpiece",
+    description: "Elegant 2-tier celebration cake customized with delicate sugar pearls, gold luster accents, and tailored inscriptions.",
+    image: cakesImage,
+    servings: 'Tiered (25-30 servings)',
+  },
+
+  // --- REAL BREADS ---
+  {
+    id: "bread-aachener",
+    name: "Aachener Brot (German Dark Rye)",
+    germanName: "Aachener Sauerteigbrot",
+    category: "breads",
+    price: 5.40,
+    badge: "Imported German Flour",
+    description: "Signature dark sourdough rye with an aromatic crust and deep, complex flavor. Baked daily at 6 AM in our stone-hearth oven.",
+    image: breadsImage,
+    servings: "2 lb round loaf",
+  },
+  {
+    id: "bread-baltic",
+    name: "Baltic Rye Bread",
+    germanName: "Baltisches Roggenbrot",
+    category: "breads",
+    price: 5.40,
+    badge: "Dense Heritage Crumb",
+    description: "Traditional 100% rye flour bread, slow-fermented for 36 hours. Wonderfully dense texture with notes of caraway.",
+    image: breadsImage,
+    servings: "24 oz sliced loaf",
+  },
+  {
+    id: "bread-pretzels",
+    name: "Bavarian Soft Pretzels (Pack of 4)",
+    germanName: "Bayrische Laugenbrezeln",
+    category: "breads",
+    price: 10.50,
+    badge: "Hand-Twisted Daily",
+    description: "Classic Munich lye pretzels with coarse Bavarian salt, crisp blistered crust, and soft pillowy interior.",
+    image: breadsImage,
+    servings: "Pack of 4 pretzels",
+  },
+  {
+    id: "bread-dinkel",
+    name: "Dinkel Bread (100% Ancient Spelt)",
+    germanName: "Reines Dinkelbrot",
+    category: "breads",
+    price: 6.20,
+    badge: "Ancient Spelt Flour",
+    description: "Nutty, easily digestible whole-spelt loaf with sunflower and flaxseed topping. Wolfgang's original German recipe.",
+    image: breadsImage,
+    servings: "2 lb sliced loaf",
+  },
+  {
+    id: "bread-black-forest-sour",
+    name: "Black Forest Sourdough Rye",
+    germanName: "Schwarzwälder Sauerteig",
+    category: "breads",
+    price: 5.80,
+    badge: "Natural Sourdough Starter",
+    description: "Thick caramelized crust with a moist, open rye crumb. Pairs perfectly with butter, cheeses, and cold cuts.",
+    image: breadsImage,
+    servings: "2 lb batard",
+  },
+  {
+    id: "bread-challah-raisin",
+    name: "Braided Challah with Golden Raisins",
+    germanName: "Festtags-Challah mit Rosinen",
+    category: "breads",
+    price: 6.50,
+    badge: "Braided Fresh",
+    description: "Sweet golden egg bread rich with plump raisins and a glossy golden wash. A Friday neighborhood tradition.",
+    image: breadsImage,
+    servings: "Large braided loaf",
+  },
+
+  // --- REAL PASTRIES & SWEETS ---
+  {
+    id: "pastry-strudel",
+    name: "Hausgemachter Apple Strudel",
+    germanName: "Original Wiener Apfelstrudel",
+    category: "pastries",
+    price: 6.25,
+    badge: "Flaky Hand-Stretched Dough",
+    description: "Paper-thin stretched dough rolled with spiced local tart apples, plump raisins, cinnamon, and toasted breadcrumbs.",
+    image: pastriesImage,
+    servings: "Individual slice",
+  },
+  {
+    id: "pastry-berliner",
+    name: "Berliner Donuts (Pack of 4)",
+    germanName: "Berliner Pfannkuchen",
+    category: "pastries",
+    price: 14.50,
+    badge: "Raspberry Filled",
+    description: "Fluffy German yeast doughnuts dusted in powdered sugar and brimming with European raspberry confiture.",
+    image: pastriesImage,
+    servings: "Box of 4 Berliners",
+  },
+  {
+    id: "pastry-almond-horn",
     name: "Almond Horn (Mandelhörnchen)",
-    germanName: "Mandelhörnchen",
+    germanName: "Feines Mandelhörnchen",
     category: "pastries",
     price: 4.95,
     badge: "Naturally Gluten-Free",
-    description: "Chewy almond paste crescent dipped in roasted sliced almonds and Belgian dark chocolate tips.",
+    description: "Chewy marzipan almond pastry crusted with roasted sliced almonds and dipped in dark Belgian chocolate.",
     image: pastriesImage,
-    servings: "1 piece",
+    servings: "1 large piece",
   },
   {
-    id: "pastry-3",
-    name: "Classic Viennese Rugelach (Dozen)",
-    germanName: "Feines Butter-Rugelach",
+    id: "pastry-rugelach",
+    name: "Viennese Butter Rugelach (Dozen)",
+    germanName: "Butter-Rugelach",
     category: "pastries",
     price: 15.00,
     badge: "Box of 12",
-    description: "Cream cheese pastry crescents filled with cinnamon walnuts, apricot jam, and chocolate.",
+    description: "Flaky cream cheese pastry spirals filled with cinnamon, toasted walnuts, apricot jam, and chocolate.",
     image: pastriesImage,
     servings: "Assorted box of 12",
   },
   {
-    id: "deli-1",
-    name: "Black Forest Ham & Swiss on Rye",
+    id: "pastry-black-white-cookie",
+    name: "Classic Black & White Cookie",
+    germanName: "Amerikaner Gebäck",
+    category: "pastries",
+    price: 3.95,
+    badge: "DMV Classic",
+    description: "Soft cake-like shortbread cookie iced half in dark chocolate fudge and half in vanilla royal glaze.",
+    image: pastriesImage,
+    servings: "1 large cookie",
+  },
+
+  // --- DELI & PLATTERS ---
+  {
+    id: "deli-ham-swiss",
+    name: "Black Forest Ham & Swiss on Fresh Rye",
     germanName: "Schwarzwälder Schinkenbrot",
     category: "deli",
     price: 11.95,
-    badge: "Deli Specialty",
-    description: "Smoked Black Forest ham, aged Swiss cheese, Düsseldorf mustard, and crisp butter pickles on fresh Bauernbrot.",
+    badge: "Deli Favorite",
+    description: "Thinly sliced Black Forest smoked ham, Swiss Emmental, German grain mustard, and crunchy pickles on freshly sliced Aachener Brot.",
     image: breadsImage,
     servings: "Made to order sandwich",
   },
   {
-    id: "deli-2",
-    name: "Authentic German Bratwurst Roll",
-    germanName: "Frische Bratwurst im Brötchen",
+    id: "deli-bratwurst",
+    name: "Bavarian Bratwurst Roll with Sauerkraut",
+    germanName: "Bratwurst mit Sauerkraut",
     category: "deli",
     price: 10.50,
     badge: "Served Hot",
-    description: "Local artisan bratwurst simmered and grilled, served with warm sauerkraut and sweet Bavarian mustard in a crusty roll.",
+    description: "Artisan grilled pork bratwurst in a fresh crusty Brötchen roll with warm spiced sauerkraut and sweet mustard.",
     image: breadsImage,
-    servings: "Individual meal",
+    servings: "Hot meal item",
+  },
+  {
+    id: "deli-party-platter",
+    name: "European Deli Cold Cut & Cheese Platter",
+    germanName: "Kalter Braten & Käseplatte",
+    category: "deli",
+    price: 65.00,
+    badge: "Event Catering",
+    description: "Generous assortment of Black Forest ham, German salami, roast beef, imported Swiss, and Gouda, served with rye bread.",
+    image: breadsImage,
+    servings: "Serves 10-12 guests",
   },
 ];
 
@@ -216,7 +348,7 @@ const mockOrders: Record<string, OrderTrackingData> = {
   "#HB-8421": {
     orderId: "#HB-8421",
     customerName: "David Miller",
-    itemsSummary: "2x Bauernbrot Sourdough, 1x Dozen Rugelach, 2x Apple Strudel",
+    itemsSummary: "2x Aachener Dark Rye, 1x Dozen Rugelach, 2x Apple Strudel",
     scheduledPickup: "Tomorrow, 9:00 AM",
     pickupLocation: "2150 N. Culpeper St, Arlington (Main Bakery Counter)",
     status: "baking",
@@ -226,7 +358,7 @@ const mockOrders: Record<string, OrderTrackingData> = {
 
 function Index() {
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
-  const [selectedCategory, setSelectedCategory] = useState<"all" | "breads" | "cakes" | "pastries" | "deli">("all");
+  const [selectedCategory, setSelectedCategory] = useState<"all" | "cakes" | "breads" | "pastries" | "deli">("all");
 
   // Cart & Checkout State
   const [cart, setCart] = useState<CartItem[]>([]);
@@ -241,17 +373,29 @@ function Index() {
   const [cardCvc, setCardCvc] = useState("789");
   const [orderPlacedMessage, setOrderPlacedMessage] = useState<string | null>(null);
 
-  // Custom Cake Studio State
+  // Custom Cake Studio State & Checkout Modal
   const [cakeOccasion, setCakeOccasion] = useState("Birthday");
   const [cakeSize, setCakeSize] = useState({ name: '8" Round (15–20 guests)', price: 65 });
   const [cakeSponge, setCakeSponge] = useState("German Chocolate Fudge");
   const [cakeFilling, setCakeFilling] = useState("Authentic Bavarian Vanilla Custard");
   const [cakeInscription, setCakeInscription] = useState("Happy 50th Birthday!");
   const [cakeDate, setCakeDate] = useState("Saturday (72 hrs notice)");
+  const [cakeNotes, setCakeNotes] = useState("");
+  const [cakeCheckoutModalOpen, setCakeCheckoutModalOpen] = useState(false);
   const [cakeCustomerName, setCakeCustomerName] = useState("");
   const [cakeCustomerPhone, setCakeCustomerPhone] = useState("");
   const [cakeCustomerEmail, setCakeCustomerEmail] = useState("");
+  const [cakePaymentOption, setCakePaymentOption] = useState<"deposit" | "full" | "counter">("deposit");
+  const [cakeCardNum, setCakeCardNum] = useState("4242 •••• •••• 4242");
   const [cakeSubmitted, setCakeSubmitted] = useState(false);
+
+  // Quick Contact Modal State
+  const [contactModalOpen, setContactModalOpen] = useState(false);
+  const [contactName, setContactName] = useState("");
+  const [contactEmail, setContactEmail] = useState("");
+  const [contactPhone, setContactPhone] = useState("");
+  const [contactMessage, setContactMessage] = useState("");
+  const [contactSent, setContactSent] = useState(false);
 
   // Order Tracker State
   const [trackingInput, setTrackingInput] = useState("#HB-1975");
@@ -307,6 +451,41 @@ function Index() {
     }, 2400);
   };
 
+  const handleCustomCakeSubmit = () => {
+    const newTicketId = `#HB-CAKE-${Math.floor(1000 + Math.random() * 9000)}`;
+    const finalName = cakeCustomerName.trim() || "Valued Customer";
+    
+    setActiveTracking({
+      orderId: newTicketId,
+      customerName: finalName,
+      itemsSummary: `Custom ${cakeSize.name} (${cakeOccasion}) • ${cakeSponge} • ${cakeFilling}`,
+      scheduledPickup: cakeDate,
+      pickupLocation: "2150 N. Culpeper St, Arlington, VA (Cake Department)",
+      status: "confirmed",
+      lastUpdated: "Just now (Shopify Custom Order)",
+    });
+
+    setCakeSubmitted(true);
+    setTimeout(() => {
+      setCakeCheckoutModalOpen(false);
+      setCakeSubmitted(false);
+      const trackElem = document.getElementById("track-order");
+      if (trackElem) {
+        trackElem.scrollIntoView({ behavior: "smooth" });
+      }
+    }, 2200);
+  };
+
+  const handleContactSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    setContactSent(true);
+    setTimeout(() => {
+      setContactSent(false);
+      setContactModalOpen(false);
+      setContactMessage("");
+    }, 2500);
+  };
+
   // Staff simulation switch
   const handleSimulateStatusChange = (newStatus: OrderStatusStep) => {
     setActiveTracking((prev) => ({
@@ -338,7 +517,7 @@ function Index() {
             <Award className="size-3.5" /> 50 Years in Arlington (Est. 1975)
           </span>
           <p className="mx-auto sm:mx-0">
-            <strong>Authentic German Breads, Cakes & Delicatessen</strong> — Order ahead for scheduled pickup!
+            <strong>Authentic German Breads, Milestone Cakes & Deli</strong> — Order ahead for scheduled pickup!
           </p>
           <a
             href="#track-order"
@@ -363,6 +542,7 @@ function Index() {
           </a>
 
           <nav className="hidden items-center gap-6 lg:flex" aria-label="Main navigation">
+            <a className="nav-link" href="#cakes-highlight">Cakes Showcase</a>
             <a className="nav-link" href="#menu">Bakery Menu & Pricing</a>
             <a className="nav-link" href="#cake-builder">Custom Cake Studio</a>
             <a className="nav-link" href="#track-order">Live Order Tracker</a>
@@ -411,6 +591,7 @@ function Index() {
         {mobileNavOpen && (
           <nav className="border-t border-border bg-background px-6 py-5 shadow-xl lg:hidden animate-in slide-in-from-top-4">
             <div className="flex flex-col gap-4 text-sm font-semibold">
+              <a href="#cakes-highlight" onClick={() => setMobileNavOpen(false)} className="py-1">Celebration Cakes</a>
               <a href="#menu" onClick={() => setMobileNavOpen(false)} className="py-1">Bakery Menu & Pricing</a>
               <a href="#cake-builder" onClick={() => setMobileNavOpen(false)} className="py-1">Custom Cake Studio</a>
               <a href="#track-order" onClick={() => setMobileNavOpen(false)} className="py-1">Live Order Tracker</a>
@@ -424,7 +605,7 @@ function Index() {
                     setCartOpen(true);
                   }}
                   variant="bakery"
-                  className="w-full justify-center"
+                  className="w-full justify-center cursor-pointer"
                 >
                   View Order ({cartItemCount} items)
                 </Button>
@@ -534,7 +715,79 @@ function Index() {
         </div>
       </section>
 
-      {/* SECTION 1: Modern Bakery Menu with Prices & Order Options */}
+      {/* DEDICATED PROMINENT CAKES SHOWCASE SECTION */}
+      <section id="cakes-highlight" className="py-20 sm:py-24 bg-secondary/60 border-b border-border">
+        <div className="mx-auto max-w-7xl px-5 lg:px-8">
+          <div className="flex flex-col justify-between gap-4 md:flex-row md:items-end mb-12">
+            <div>
+              <span className="eyebrow">Milestone Celebration Showcase</span>
+              <h2 className="section-title">Heidelberg Master Cakes & Tortes</h2>
+            </div>
+            <div className="flex items-center gap-3">
+              <p className="max-w-md text-xs sm:text-sm text-muted-foreground">
+                Crafted with authentic Bavarian creams, European chocolate ganache, and genuine Kirschwasser cherry liqueur.
+              </p>
+              <Button asChild variant="bakery" className="shrink-0 cursor-pointer">
+                <a href="#cake-builder">Design Custom Cake &rarr;</a>
+              </Button>
+            </div>
+          </div>
+
+          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+            {bakeryMenu.filter(i => i.category === "cakes").slice(0, 4).map((cake) => (
+              <div
+                key={cake.id}
+                className="group relative flex flex-col justify-between overflow-hidden rounded-lg border border-border bg-card shadow-sm transition-all hover:shadow-xl hover:border-accent"
+              >
+                <div>
+                  <div className="relative aspect-4/3 overflow-hidden bg-muted">
+                    <img
+                      src={cake.image}
+                      alt={cake.name}
+                      loading="lazy"
+                      className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-106"
+                    />
+                    <div className="absolute top-2.5 left-2.5 rounded-full bg-primary/95 px-2.5 py-0.5 text-[10px] font-bold text-primary-foreground backdrop-blur-xs">
+                      {cake.badge}
+                    </div>
+                  </div>
+
+                  <div className="p-4">
+                    <h3 className="font-display text-base font-bold text-foreground group-hover:text-accent transition-colors">
+                      {cake.name}
+                    </h3>
+                    {cake.germanName && (
+                      <p className="text-[11px] italic text-muted-foreground mt-0.5">{cake.germanName}</p>
+                    )}
+                    <p className="mt-2 text-xs leading-relaxed text-muted-foreground line-clamp-2">
+                      {cake.description}
+                    </p>
+                  </div>
+                </div>
+
+                <div className="border-t border-border/80 p-3.5 bg-muted/40 flex items-center justify-between">
+                  <span className="text-[11px] text-muted-foreground font-medium">{cake.servings}</span>
+                  <div className="flex items-center gap-2">
+                    <span className="font-display text-base font-bold text-accent">
+                      ${cake.price.toFixed(2)}
+                    </span>
+                    <Button
+                      variant="bakery"
+                      size="sm"
+                      onClick={() => addToCart(cake)}
+                      className="text-xs h-8 px-3 cursor-pointer"
+                    >
+                      <Plus className="size-3" /> Add
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* SECTION 1: Full Bakery Menu with Prices & Order Options */}
       <section id="menu" className="py-16 sm:py-20 bg-background">
         <div className="mx-auto max-w-7xl px-5 lg:px-8">
           <div className="flex flex-col justify-between gap-4 md:flex-row md:items-end mb-8">
@@ -548,7 +801,7 @@ function Index() {
           </div>
 
           {/* STICKY CATEGORY NAV BAR: Stays pinned while scrolling through the menu */}
-          <div className="sticky top-20 z-30 mb-8 rounded-lg border border-border bg-card/90 px-4 py-3 shadow-md backdrop-blur-md">
+          <div className="sticky top-20 z-30 mb-8 rounded-lg border border-border bg-card/95 px-4 py-3 shadow-md backdrop-blur-md">
             <div className="flex items-center justify-between gap-2 overflow-x-auto">
               <div className="flex items-center gap-2 shrink-0">
                 <Sliders className="size-4 text-accent hidden sm:inline" />
@@ -559,10 +812,10 @@ function Index() {
               <div className="flex items-center gap-2 overflow-x-auto pb-1 sm:pb-0">
                 {[
                   { id: "all", label: "All Items" },
+                  { id: "cakes", label: "✨ Milestone Cakes & Tortes" },
                   { id: "breads", label: "Artisan Breads & Pretzels" },
-                  { id: "cakes", label: "Milestone Cakes & Tortes" },
-                  { id: "pastries", label: "European Pastries" },
-                  { id: "deli", label: "Deli Sandwiches & Savory" },
+                  { id: "pastries", label: "European Pastries & Sweets" },
+                  { id: "deli", label: "Deli Sandwiches & Platters" },
                 ].map((tab) => (
                   <button
                     key={tab.id}
@@ -649,20 +902,10 @@ function Index() {
               </div>
             ))}
           </div>
-
-          <div className="mt-12 text-center bg-secondary p-8 rounded-md border border-border">
-            <h3 className="font-display text-xl font-bold">Planning an Event or Need a Custom Cake?</h3>
-            <p className="mt-2 text-sm text-muted-foreground max-w-xl mx-auto">
-              Use our interactive Custom Cake Studio below to select tiers, Bavarian fillings, custom piping messages, and enter your details to secure your celebration date.
-            </p>
-            <Button asChild variant="bakery" className="mt-5 cursor-pointer">
-              <a href="#cake-builder">Open Custom Cake Studio &rarr;</a>
-            </Button>
-          </div>
         </div>
       </section>
 
-      {/* SECTION 2: Interactive Custom Cake & Catering Studio with Customer Contact Fields */}
+      {/* SECTION 2: Interactive Custom Cake & Catering Studio */}
       <section id="cake-builder" className="border-y border-border bg-secondary/50 py-20 sm:py-24">
         <div className="mx-auto max-w-7xl px-5 lg:px-8">
           <div className="mb-12 text-center max-w-3xl mx-auto">
@@ -794,54 +1037,15 @@ function Index() {
                   type="text"
                   value={cakeInscription}
                   onChange={(e) => setCakeInscription(e.target.value)}
-                  placeholder="e.g. Happy 40th Birthday Marcus!"
+                  placeholder="e.g. Happy 50th Birthday Marcus!"
                   className="w-full rounded-md border border-input bg-background px-4 py-2.5 text-sm text-foreground focus:border-accent focus:outline-none focus:ring-1 focus:ring-accent"
                 />
               </div>
 
-              {/* Step 6: Customer Contact Details */}
-              <div className="border-t border-border pt-6 space-y-4">
-                <label className="block text-xs font-bold uppercase tracking-wider text-accent flex items-center gap-1.5">
-                  <User className="size-3.5" /> Step 6: Your Contact Details for Bakery Confirmation
-                </label>
-                <div className="grid gap-3 sm:grid-cols-3">
-                  <div>
-                    <span className="text-[11px] font-semibold text-muted-foreground block mb-1">Full Name *</span>
-                    <input
-                      type="text"
-                      value={cakeCustomerName}
-                      onChange={(e) => setCakeCustomerName(e.target.value)}
-                      placeholder="e.g. Eleanor Vance"
-                      className="w-full rounded-md border border-input bg-background p-2 text-xs focus:border-accent focus:outline-none"
-                    />
-                  </div>
-                  <div>
-                    <span className="text-[11px] font-semibold text-muted-foreground block mb-1">Phone Number (SMS) *</span>
-                    <input
-                      type="tel"
-                      value={cakeCustomerPhone}
-                      onChange={(e) => setCakeCustomerPhone(e.target.value)}
-                      placeholder="(703) 555-0199"
-                      className="w-full rounded-md border border-input bg-background p-2 text-xs focus:border-accent focus:outline-none"
-                    />
-                  </div>
-                  <div>
-                    <span className="text-[11px] font-semibold text-muted-foreground block mb-1">Email Address *</span>
-                    <input
-                      type="email"
-                      value={cakeCustomerEmail}
-                      onChange={(e) => setCakeCustomerEmail(e.target.value)}
-                      placeholder="name@example.com"
-                      className="w-full rounded-md border border-input bg-background p-2 text-xs focus:border-accent focus:outline-none"
-                    />
-                  </div>
-                </div>
-              </div>
-
-              {/* Step 7: Pickup Date */}
+              {/* Step 6: Pickup Date */}
               <div>
                 <label className="block text-xs font-bold uppercase tracking-wider text-muted-foreground mb-2">
-                  Step 7: Requested Pickup Day (Minimum 72 Hours Lead Time)
+                  Step 6: Requested Pickup Day (Minimum 72 Hours Lead Time)
                 </label>
                 <div className="flex flex-wrap gap-2">
                   {[
@@ -864,6 +1068,20 @@ function Index() {
                     </button>
                   ))}
                 </div>
+              </div>
+
+              {/* Special Instructions & Notes */}
+              <div>
+                <label className="block text-xs font-bold uppercase tracking-wider text-muted-foreground mb-2">
+                  Special Notes or Dietary Preferences (Optional)
+                </label>
+                <textarea
+                  value={cakeNotes}
+                  onChange={(e) => setCakeNotes(e.target.value)}
+                  rows={2}
+                  placeholder="e.g. Nut-free preparation, gold luster accents on edges..."
+                  className="w-full rounded-md border border-input bg-background p-2.5 text-xs focus:border-accent focus:outline-none"
+                />
               </div>
             </div>
 
@@ -896,10 +1114,6 @@ function Index() {
                     <strong className="text-accent text-right italic font-serif">"{cakeInscription || "None"}"</strong>
                   </div>
                   <div className="flex justify-between">
-                    <span>Customer:</span>
-                    <strong className="text-primary-foreground text-right">{cakeCustomerName || "Eleanor Vance"}</strong>
-                  </div>
-                  <div className="flex justify-between">
                     <span>Scheduled Pickup:</span>
                     <strong className="text-primary-foreground text-right">{cakeDate}</strong>
                   </div>
@@ -912,26 +1126,13 @@ function Index() {
                   </span>
                 </div>
 
-                {cakeSubmitted ? (
-                  <div className="mt-6 rounded-md bg-emerald-950/80 border border-emerald-500/40 p-4 text-center animate-in zoom-in-95">
-                    <CheckCircle2 className="size-8 text-emerald-400 mx-auto mb-2" />
-                    <strong className="block text-sm text-emerald-200">Custom Cake Order Received!</strong>
-                    <p className="mt-1 text-xs text-emerald-300">
-                      Ticket <strong>#HB-CUSTOM-92</strong> created for {cakeCustomerName || "Eleanor Vance"}. Confirmation sent via SMS.
-                    </p>
-                  </div>
-                ) : (
-                  <Button
-                    variant="bakery"
-                    onClick={() => {
-                      setCakeSubmitted(true);
-                      setTimeout(() => setCakeSubmitted(false), 8000);
-                    }}
-                    className="mt-6 w-full justify-center bg-accent text-accent-foreground font-bold hover:bg-white hover:text-foreground h-12 text-sm cursor-pointer"
-                  >
-                    Lock in Date & Request Cake Order &rarr;
-                  </Button>
-                )}
+                <Button
+                  variant="bakery"
+                  onClick={() => setCakeCheckoutModalOpen(true)}
+                  className="mt-6 w-full justify-center bg-accent text-accent-foreground font-bold hover:bg-white hover:text-foreground h-12 text-sm cursor-pointer shadow-lg"
+                >
+                  Enter Details & Place Order &rarr;
+                </Button>
 
                 <p className="mt-3 text-center text-[11px] text-primary-muted">
                   Questions? Call Wolfgang's team directly at (703) 527-8394
@@ -1285,7 +1486,7 @@ function Index() {
               </p>
             </div>
             <div className="flex gap-3">
-              <Button asChild variant="bakery" className="bg-accent text-accent-foreground hover:bg-white hover:text-foreground font-bold">
+              <Button asChild variant="bakery" className="bg-accent text-accent-foreground hover:bg-white hover:text-foreground font-bold cursor-pointer">
                 <a href="mailto:info@heidelbergbakery.com?subject=New%20Website%20Proposal%20Review">
                   Schedule Walkthrough &rarr;
                 </a>
@@ -1295,59 +1496,412 @@ function Index() {
         </div>
       </section>
 
-      {/* Footer with OFFICIAL WEBSITE LOGO */}
-      <footer className="bg-primary/95 py-12 text-primary-foreground border-t border-primary-foreground/10">
-        <div className="mx-auto flex max-w-7xl flex-col gap-8 px-5 md:flex-row md:items-end md:justify-between lg:px-8">
-          <div>
-            <img
-              src={officialLogo}
-              alt="Heidelberg Pastry Shoppe Official Logo"
-              loading="lazy"
-              width="220"
-              height="60"
-              className="h-14 w-auto object-contain brightness-0 invert"
-            />
-            <p className="mt-4 max-w-sm text-sm leading-6 text-primary-muted">
-              Authentic German bakery, wedding cakes, and European delicatessen serving Arlington, Virginia since 1975.
+      {/* FOOTER: Crisply formatted official colored logo + Social Media Links */}
+      <footer className="bg-primary/95 py-14 text-primary-foreground border-t border-primary-foreground/10">
+        <div className="mx-auto flex max-w-7xl flex-col gap-10 px-5 md:flex-row md:items-start md:justify-between lg:px-8">
+          <div className="max-w-md">
+            {/* Crisp authentic logo in clean white badge so colors pop without blur or whiteout */}
+            <div className="inline-block rounded-lg bg-white p-3 shadow-md">
+              <img
+                src={officialLogo}
+                alt="Heidelberg Pastry Shoppe Authentic Logo"
+                loading="lazy"
+                width="200"
+                height="55"
+                className="h-11 w-auto object-contain"
+              />
+            </div>
+            <p className="mt-4 text-sm leading-relaxed text-primary-muted">
+              Authentic German bakery, custom wedding cakes, and European delicatessen serving Arlington, Virginia and the Washington D.C. area since 1975.
             </p>
+
+            {/* Official Social Media Links */}
+            <div className="mt-6 flex items-center gap-3">
+              <span className="text-xs font-bold text-accent uppercase tracking-wider">Follow Us:</span>
+              <a
+                href="https://facebook.com/HeidelbergPastryShoppe"
+                target="_blank"
+                rel="noreferrer"
+                aria-label="Heidelberg on Facebook"
+                className="flex size-9 items-center justify-center rounded-full bg-white/10 text-white hover:bg-accent hover:text-accent-foreground transition-colors"
+              >
+                <Facebook className="size-4" />
+              </a>
+              <a
+                href="https://instagram.com/heidelbergpastry"
+                target="_blank"
+                rel="noreferrer"
+                aria-label="Heidelberg on Instagram"
+                className="flex size-9 items-center justify-center rounded-full bg-white/10 text-white hover:bg-accent hover:text-accent-foreground transition-colors"
+              >
+                <Instagram className="size-4" />
+              </a>
+              <a
+                href="https://maps.google.com/?q=2150+N+Culpeper+Street+Arlington+VA+22207"
+                target="_blank"
+                rel="noreferrer"
+                aria-label="Heidelberg on Google Maps"
+                className="flex size-9 items-center justify-center rounded-full bg-white/10 text-white hover:bg-accent hover:text-accent-foreground transition-colors"
+              >
+                <MapPin className="size-4" />
+              </a>
+            </div>
           </div>
-          <div className="flex flex-wrap gap-x-8 gap-y-3 text-sm font-medium text-primary-muted">
-            <a href="#menu" className="hover:text-primary-foreground">Menu & Pricing</a>
-            <a href="#cake-builder" className="hover:text-primary-foreground">Custom Cakes</a>
-            <a href="#track-order" className="hover:text-primary-foreground">Order Tracker</a>
-            <a href="#reviews" className="hover:text-primary-foreground">Reviews</a>
-            <a href="#story" className="hover:text-primary-foreground">Our Story</a>
-            <a href="#visit" className="hover:text-primary-foreground">Visit</a>
+
+          <div className="grid grid-cols-2 gap-8 sm:grid-cols-3 text-sm font-medium text-primary-muted">
+            <div className="space-y-2.5">
+              <strong className="block text-xs font-bold text-white uppercase tracking-wider mb-3">Explore Menu</strong>
+              <a href="#cakes-highlight" className="block hover:text-white">Milestone Cakes</a>
+              <a href="#menu" className="block hover:text-white">Artisan Breads</a>
+              <a href="#menu" className="block hover:text-white">Pastries & Sweets</a>
+              <a href="#menu" className="block hover:text-white">Deli & Platters</a>
+            </div>
+            <div className="space-y-2.5">
+              <strong className="block text-xs font-bold text-white uppercase tracking-wider mb-3">Services</strong>
+              <a href="#cake-builder" className="block hover:text-white">Custom Cake Studio</a>
+              <a href="#track-order" className="block hover:text-white">Order Status Tracker</a>
+              <a href="#visit" className="block hover:text-white">Store Hours</a>
+              <button onClick={() => setContactModalOpen(true)} className="text-left block hover:text-white cursor-pointer">
+                Contact & Inquiries
+              </button>
+            </div>
+            <div className="space-y-2.5 col-span-2 sm:col-span-1">
+              <strong className="block text-xs font-bold text-white uppercase tracking-wider mb-3">Location</strong>
+              <p className="text-xs leading-5">2150 N. Culpeper St<br />Arlington, VA 22207</p>
+              <p className="text-xs leading-5 text-accent">(703) 527-8394</p>
+            </div>
           </div>
         </div>
-        <div className="mx-auto mt-10 max-w-7xl border-t border-primary-foreground/15 px-5 pt-5 text-xs text-primary-muted lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-2">
+
+        <div className="mx-auto mt-12 max-w-7xl border-t border-primary-foreground/15 px-5 pt-6 text-xs text-primary-muted lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-2">
           <span>&copy; 1975–2026 Heidelberg Pastry Shoppe. All rights reserved.</span>
-          <span>2150 N. Culpeper St, Arlington, VA 22207</span>
+          <span>Crafted with pride in Arlington, Virginia</span>
         </div>
       </footer>
 
-      {/* FLOATING ACTION WIDGET: Always visible on screen as the user scrolls */}
-      <div className="fixed bottom-6 right-6 z-40 flex flex-col sm:flex-row items-end sm:items-center gap-2.5">
-        <Button
-          onClick={() => setCartOpen(true)}
-          variant="bakery"
-          className="shadow-2xl flex items-center gap-2 text-xs font-bold h-11 px-4 border border-accent/40 bg-primary text-primary-foreground hover:bg-accent hover:text-accent-foreground cursor-pointer"
-        >
-          <ShoppingBag className="size-4 text-accent" />
-          <span>Order Tray</span>
-          {cartItemCount > 0 && (
-            <span className="rounded-full bg-accent text-accent-foreground px-2 py-0.5 text-[11px] font-bold">
-              {cartItemCount}
-            </span>
-          )}
-        </Button>
+      {/* FLOATING ACTION WIDGET: Vertically stacked sleek circles on the bottom-right so they never block page content */}
+      <div className="fixed bottom-6 right-6 z-40 flex flex-col items-end gap-3 pointer-events-auto">
+        {/* Floating Contact Button */}
+        <div className="group relative flex items-center">
+          <span className="mr-2 hidden rounded-md bg-black/85 px-2.5 py-1 text-[11px] font-semibold text-white shadow-md backdrop-blur-xs group-hover:block transition-all">
+            Contact & Message
+          </span>
+          <button
+            onClick={() => setContactModalOpen(true)}
+            aria-label="Contact Bakery"
+            className="flex size-13 items-center justify-center rounded-full border border-border bg-card text-foreground shadow-xl transition-transform hover:scale-110 active:scale-95 cursor-pointer"
+          >
+            <MessageCircle className="size-5 text-accent" />
+          </button>
+        </div>
 
-        <Button asChild variant="bakery" className="shadow-2xl text-xs font-bold h-11 px-4 bg-accent text-accent-foreground hover:bg-white hover:text-foreground cursor-pointer">
-          <a href="#cake-builder">
-            <Cake className="size-4" /> Design Custom Cake
+        {/* Floating Custom Cake Button */}
+        <div className="group relative flex items-center">
+          <span className="mr-2 hidden rounded-md bg-black/85 px-2.5 py-1 text-[11px] font-semibold text-white shadow-md backdrop-blur-xs group-hover:block transition-all">
+            Custom Cake Studio
+          </span>
+          <a
+            href="#cake-builder"
+            aria-label="Design Custom Cake"
+            className="flex size-13 items-center justify-center rounded-full bg-accent text-accent-foreground shadow-xl transition-transform hover:scale-110 active:scale-95 cursor-pointer"
+          >
+            <Cake className="size-5" />
           </a>
-        </Button>
+        </div>
+
+        {/* Floating Cart Button */}
+        <div className="group relative flex items-center">
+          <span className="mr-2 hidden rounded-md bg-black/85 px-2.5 py-1 text-[11px] font-semibold text-white shadow-md backdrop-blur-xs group-hover:block transition-all">
+            View Order Tray
+          </span>
+          <button
+            onClick={() => setCartOpen(true)}
+            aria-label="Open Order Tray"
+            className="relative flex size-13 items-center justify-center rounded-full border border-accent/40 bg-primary text-primary-foreground shadow-2xl transition-transform hover:scale-110 active:scale-95 cursor-pointer"
+          >
+            <ShoppingBag className="size-5 text-accent" />
+            {cartItemCount > 0 && (
+              <span className="absolute -top-1 -right-1 flex size-5 items-center justify-center rounded-full bg-accent text-[11px] font-bold text-accent-foreground shadow-sm animate-in zoom-in-50">
+                {cartItemCount}
+              </span>
+            )}
+          </button>
+        </div>
       </div>
+
+      {/* MODAL 1: CUSTOM CAKE ORDER PLACEMENT & PAYMENT GATEWAY MODAL */}
+      {cakeCheckoutModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4 backdrop-blur-xs animate-in fade-in-50 overflow-y-auto">
+          <div className="relative w-full max-w-xl rounded-xl border border-border bg-card text-card-foreground shadow-2xl p-6 sm:p-8 my-8 max-h-[92vh] overflow-y-auto">
+            <button
+              onClick={() => setCakeCheckoutModalOpen(false)}
+              className="absolute top-4 right-4 rounded-md p-1.5 text-muted-foreground hover:bg-muted hover:text-foreground cursor-pointer"
+            >
+              <X className="size-5" />
+            </button>
+
+            <div className="flex items-center gap-2 mb-2">
+              <Cake className="size-5 text-accent" />
+              <span className="text-xs font-bold uppercase tracking-wider text-accent">Order Custom Cake</span>
+            </div>
+            <h3 className="font-display text-2xl font-bold">Review & Place Cake Order</h3>
+            <p className="text-xs text-muted-foreground mt-1 mb-6">
+              Lock in your scheduled pickup date with Wolfgang's master cake decorating department.
+            </p>
+
+            {/* Cake Summary Box */}
+            <div className="rounded-lg bg-secondary/50 p-4 border border-border space-y-2 mb-6 text-xs">
+              <div className="flex justify-between font-semibold">
+                <span>Selected Cake:</span>
+                <strong className="text-foreground">{cakeOccasion} Cake • {cakeSize.name}</strong>
+              </div>
+              <div className="flex justify-between text-muted-foreground">
+                <span>Flavor & Filling:</span>
+                <span>{cakeSponge} + {cakeFilling}</span>
+              </div>
+              <div className="flex justify-between text-muted-foreground">
+                <span>Piping Inscription:</span>
+                <span className="italic font-serif font-semibold text-accent">"{cakeInscription || "None"}"</span>
+              </div>
+              <div className="flex justify-between text-muted-foreground">
+                <span>Pickup Window:</span>
+                <span className="font-semibold text-foreground">{cakeDate}</span>
+              </div>
+              <div className="border-t border-border/80 pt-2 flex justify-between font-bold text-sm text-foreground">
+                <span>Estimated Price:</span>
+                <span className="font-display text-base text-accent">${cakeSize.price.toFixed(2)}</span>
+              </div>
+            </div>
+
+            {/* Form Fields: Name, Phone, Email */}
+            <div className="space-y-4 mb-6">
+              <span className="text-xs font-bold uppercase tracking-wider text-foreground block flex items-center gap-1.5">
+                <User className="size-3.5 text-accent" /> Customer Details for Order & SMS
+              </span>
+              <div className="grid gap-3 sm:grid-cols-2">
+                <div>
+                  <label className="text-[11px] font-semibold text-muted-foreground block mb-1">Your Full Name *</label>
+                  <input
+                    type="text"
+                    required
+                    value={cakeCustomerName}
+                    onChange={(e) => setCakeCustomerName(e.target.value)}
+                    placeholder="Eleanor Vance"
+                    className="w-full rounded-md border border-input bg-background p-2.5 text-xs focus:border-accent focus:outline-none"
+                  />
+                </div>
+                <div>
+                  <label className="text-[11px] font-semibold text-muted-foreground block mb-1">Phone Number (For SMS Ready Alert) *</label>
+                  <input
+                    type="tel"
+                    required
+                    value={cakeCustomerPhone}
+                    onChange={(e) => setCakeCustomerPhone(e.target.value)}
+                    placeholder="(703) 555-0199"
+                    className="w-full rounded-md border border-input bg-background p-2.5 text-xs focus:border-accent focus:outline-none"
+                  />
+                </div>
+              </div>
+              <div>
+                <label className="text-[11px] font-semibold text-muted-foreground block mb-1">Email Address (For Confirmation & Receipt) *</label>
+                <input
+                  type="email"
+                  required
+                  value={cakeCustomerEmail}
+                  onChange={(e) => setCakeCustomerEmail(e.target.value)}
+                  placeholder="eleanor@example.com"
+                  className="w-full rounded-md border border-input bg-background p-2.5 text-xs focus:border-accent focus:outline-none"
+                />
+              </div>
+            </div>
+
+            {/* MOCKUP PAYMENT GATEWAY */}
+            <div className="rounded-lg border border-border p-4 bg-muted/20 space-y-3 mb-6">
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-bold uppercase tracking-wider text-foreground flex items-center gap-1.5">
+                  <CreditCard className="size-3.5 text-accent" /> Cake Payment Option (Demo)
+                </span>
+                <span className="text-[10px] text-muted-foreground bg-secondary px-2 py-0.5 rounded-xs font-medium">
+                  Shopify Checkout Protected
+                </span>
+              </div>
+
+              <div className="grid grid-cols-3 gap-2">
+                <button
+                  type="button"
+                  onClick={() => setCakePaymentOption("deposit")}
+                  className={`rounded-md border p-2 text-center text-xs font-semibold transition-all cursor-pointer ${
+                    cakePaymentOption === "deposit"
+                      ? "border-accent bg-accent/15 text-foreground ring-1 ring-accent"
+                      : "border-border text-muted-foreground hover:bg-muted"
+                  }`}
+                >
+                  50% Deposit (${(cakeSize.price * 0.5).toFixed(2)})
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setCakePaymentOption("full")}
+                  className={`rounded-md border p-2 text-center text-xs font-semibold transition-all cursor-pointer ${
+                    cakePaymentOption === "full"
+                      ? "border-accent bg-accent/15 text-foreground ring-1 ring-accent"
+                      : "border-border text-muted-foreground hover:bg-muted"
+                  }`}
+                >
+                  Pay in Full (${cakeSize.price.toFixed(2)})
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setCakePaymentOption("counter")}
+                  className={`rounded-md border p-2 text-center text-xs font-semibold transition-all cursor-pointer ${
+                    cakePaymentOption === "counter"
+                      ? "border-accent bg-accent/15 text-foreground ring-1 ring-accent"
+                      : "border-border text-muted-foreground hover:bg-muted"
+                  }`}
+                >
+                  Pay at Pickup
+                </button>
+              </div>
+
+              {cakePaymentOption !== "counter" && (
+                <div className="space-y-2 pt-2 border-t border-border">
+                  <div>
+                    <label className="text-[10px] text-muted-foreground block mb-0.5">Card Number (Demo Mockup)</label>
+                    <div className="relative">
+                      <input
+                        type="text"
+                        value={cakeCardNum}
+                        onChange={(e) => setCakeCardNum(e.target.value)}
+                        className="w-full rounded-md border border-input bg-background p-2 text-xs font-mono focus:border-accent focus:outline-none"
+                      />
+                      <Lock className="size-3 text-muted-foreground absolute right-2.5 top-2.5" />
+                    </div>
+                  </div>
+                  <div className="grid grid-cols-2 gap-2">
+                    <input
+                      type="text"
+                      defaultValue="08/28"
+                      className="rounded-md border border-input bg-background p-2 text-xs font-mono"
+                      placeholder="MM/YY"
+                    />
+                    <input
+                      type="text"
+                      defaultValue="789"
+                      className="rounded-md border border-input bg-background p-2 text-xs font-mono"
+                      placeholder="CVC"
+                    />
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {cakeSubmitted ? (
+              <div className="rounded-md bg-emerald-950/80 border border-emerald-500/40 p-4 text-center animate-in zoom-in-95">
+                <CheckCircle2 className="size-8 text-emerald-400 mx-auto mb-2" />
+                <strong className="block text-sm text-emerald-200">Custom Cake Order Authorized & Placed!</strong>
+                <p className="mt-1 text-xs text-emerald-300">
+                  Ticket <strong>#HB-CAKE-1975</strong> confirmed. SMS sent to {cakeCustomerPhone || "(703) 555-0199"}.
+                </p>
+              </div>
+            ) : (
+              <Button
+                variant="bakery"
+                onClick={handleCustomCakeSubmit}
+                className="w-full justify-center bg-accent text-accent-foreground font-bold hover:bg-primary hover:text-primary-foreground h-12 text-sm cursor-pointer shadow-md"
+              >
+                Authorize & Confirm Custom Cake Order &rarr;
+              </Button>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* MODAL 2: HOVERING / FLOATING CONTACT US POPUP */}
+      {contactModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4 backdrop-blur-xs animate-in fade-in-50">
+          <div className="relative w-full max-w-md rounded-xl border border-border bg-card text-card-foreground shadow-2xl p-6 sm:p-7">
+            <button
+              onClick={() => setContactModalOpen(false)}
+              className="absolute top-4 right-4 rounded-md p-1.5 text-muted-foreground hover:bg-muted hover:text-foreground cursor-pointer"
+            >
+              <X className="size-5" />
+            </button>
+
+            <div className="flex items-center gap-2 mb-2">
+              <MessageCircle className="size-5 text-accent" />
+              <span className="text-xs font-bold uppercase tracking-wider text-accent">Contact Heidelberg Bakery</span>
+            </div>
+            <h3 className="font-display text-xl font-bold">Send Wolfgang & Team a Message</h3>
+            <p className="text-xs text-muted-foreground mt-1 mb-5">
+              Have questions about specialty breads, custom wedding cakes, or catering platters? We reply within 2 hours.
+            </p>
+
+            {contactSent ? (
+              <div className="rounded-md bg-emerald-950/80 border border-emerald-500/40 p-5 text-center animate-in zoom-in-95">
+                <CheckCircle2 className="size-8 text-emerald-400 mx-auto mb-2" />
+                <strong className="block text-sm text-emerald-200">Message Sent to Heidelberg!</strong>
+                <p className="mt-1 text-xs text-emerald-300">
+                  Wolfgang's team will contact you at {contactEmail || contactPhone || "your email/phone"} shortly.
+                </p>
+              </div>
+            ) : (
+              <form onSubmit={handleContactSubmit} className="space-y-3.5">
+                <div>
+                  <label className="text-[11px] font-semibold text-muted-foreground block mb-1">Your Name *</label>
+                  <input
+                    type="text"
+                    required
+                    value={contactName}
+                    onChange={(e) => setContactName(e.target.value)}
+                    placeholder="Marcus Miller"
+                    className="w-full rounded-md border border-input bg-background p-2.5 text-xs focus:border-accent focus:outline-none"
+                  />
+                </div>
+                <div className="grid grid-cols-2 gap-2">
+                  <div>
+                    <label className="text-[11px] font-semibold text-muted-foreground block mb-1">Email Address *</label>
+                    <input
+                      type="email"
+                      required
+                      value={contactEmail}
+                      onChange={(e) => setContactEmail(e.target.value)}
+                      placeholder="marcus@example.com"
+                      className="w-full rounded-md border border-input bg-background p-2.5 text-xs focus:border-accent focus:outline-none"
+                    />
+                  </div>
+                  <div>
+                    <label className="text-[11px] font-semibold text-muted-foreground block mb-1">Phone (Optional)</label>
+                    <input
+                      type="tel"
+                      value={contactPhone}
+                      onChange={(e) => setContactPhone(e.target.value)}
+                      placeholder="(703) 527-8394"
+                      className="w-full rounded-md border border-input bg-background p-2.5 text-xs focus:border-accent focus:outline-none"
+                    />
+                  </div>
+                </div>
+                <div>
+                  <label className="text-[11px] font-semibold text-muted-foreground block mb-1">Your Message or Inquiry *</label>
+                  <textarea
+                    required
+                    rows={3}
+                    value={contactMessage}
+                    onChange={(e) => setContactMessage(e.target.value)}
+                    placeholder="Hello! I would like to ask about a custom 3-tier cake for our anniversary..."
+                    className="w-full rounded-md border border-input bg-background p-2.5 text-xs focus:border-accent focus:outline-none"
+                  />
+                </div>
+                <Button
+                  type="submit"
+                  variant="bakery"
+                  className="w-full justify-center bg-accent text-accent-foreground font-bold hover:bg-primary hover:text-primary-foreground h-11 text-xs cursor-pointer shadow-md"
+                >
+                  <Send className="size-3.5" /> Send Message Directly to Bakery
+                </Button>
+              </form>
+            )}
+          </div>
+        </div>
+      )}
 
       {/* Cart Drawer Slide-Over Modal with CUSTOMER DETAILS & PAYMENT FORM */}
       {cartOpen && (
@@ -1594,7 +2148,7 @@ function Index() {
                   <Button
                     variant="bakery"
                     onClick={handleCheckoutMock}
-                    className="w-full justify-center bg-accent text-accent-foreground hover:bg-primary hover:text-primary-foreground font-bold h-12 text-sm cursor-pointer"
+                    className="w-full justify-center bg-accent text-accent-foreground hover:bg-primary hover:text-primary-foreground font-bold h-12 text-sm cursor-pointer shadow-md"
                   >
                     Confirm & Place Bakery Order &rarr;
                   </Button>

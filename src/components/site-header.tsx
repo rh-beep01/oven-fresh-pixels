@@ -2,7 +2,7 @@
 import { ChevronDown, Menu, Phone, ShoppingBag, X } from "lucide-react";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import logoAsset from "@/assets/heidelberg-logo.png.asset.json";
+import officialLogo from "@/assets/heidelberg-official-logo.png";
 import { PHONE, PHONE_HREF, categories } from "@/data/site";
 
 const cakeLinks = [
@@ -71,7 +71,7 @@ export function SiteHeader() {
       <div className="mx-auto flex h-24 max-w-7xl items-center justify-between gap-6 px-5 lg:px-8">
         <a href={"/" as any} aria-label="Heidelberg home" className="shrink-0">
           <img
-            src={logoAsset.url}
+            src={officialLogo}
             alt="Heidelberg Pastry Shoppe"
             className="h-14 w-auto"
             width="184"
