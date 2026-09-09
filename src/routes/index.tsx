@@ -140,6 +140,57 @@ const bakeryMenu: BakeryItem[] = [
     ]
   },
   {
+    id: "pastry-croissants",
+    name: "Artisan Bavarian Butter Croissants",
+    germanName: "Bayerische Butterhörnchen",
+    category: "pastries",
+    price: 4.25,
+    badge: "Remastered Signature",
+    description: "Golden, multi-layered Viennoiserie pastry folded with pure European butter for a crisp flaky exterior and an airy, melt-in-your-mouth interior.",
+    image: croissantBasketImg,
+    servings: "Baked fresh 5:00 AM daily",
+    isFeatured: true,
+    packOptions: [
+      { name: "Single Warm Croissant", priceDelta: 0 },
+      { name: "4-Pack Breakfast Basket", priceDelta: 12.25 },
+      { name: "Baker's Half-Dozen (6 Pack)", priceDelta: 19.75 },
+      { name: "Baker's Dozen (13 Pack)", priceDelta: 43.75 }
+    ]
+  },
+  {
+    id: "pastry-chocolate-swirl",
+    name: "European Chocolate Ganache Swirl Cookies",
+    germanName: "Schoko-Spritzgebäck mit Ganache",
+    category: "pastries",
+    price: 13.50,
+    badge: "Belgian Dark Ganache",
+    description: "Buttery, crumbly spritz shortbread rounds generously piped with high-gloss swirls of rich dark Belgian chocolate ganache and dusted with powdered sugar.",
+    image: chocolateSwirlCookiesImg,
+    servings: "4-Pack on slate board",
+    isFeatured: true,
+    packOptions: [
+      { name: "4-Pack Specialty Box", priceDelta: 0 },
+      { name: "8-Pack Gathering Tray", priceDelta: 12.50 },
+      { name: "Baker's Dozen (13 Cookies)", priceDelta: 25.50 }
+    ]
+  },
+  {
+    id: "pastry-florentine",
+    name: "Authentic Florentiner Almond Lace Cookies",
+    germanName: "Florentiner Mandelgebäck",
+    category: "pastries",
+    price: 16.00,
+    badge: "Caramelized Almond Lace",
+    description: "Crisp, wafer-thin lace cookies made with toasted sliced almonds, honey, and orange zest, half-dipped in decadent Belgian dark chocolate and filled with sweet vanilla cream.",
+    image: florentineCookiesImg,
+    servings: "1/2 lb Gift Selection (approx 10-12 pcs)",
+    isFeatured: true,
+    packOptions: [
+      { name: "1/2 lb Bakery Box", priceDelta: 0 },
+      { name: "1 lb Gift Tin", priceDelta: 15.00 }
+    ]
+  },
+  {
     id: "cake-black-forest",
     name: "Authentic Black Forest Cake",
     germanName: "Schwarzwälder Kirschtorte",
@@ -385,57 +436,6 @@ const bakeryMenu: BakeryItem[] = [
   },
 
   // --- REAL EUROPEAN PASTRIES & SWEETS ---
-  {
-    id: "pastry-croissants",
-    name: "Artisan Bavarian Butter Croissants",
-    germanName: "Bayerische Butterhörnchen",
-    category: "pastries",
-    price: 4.25,
-    badge: "Remastered Signature",
-    description: "Golden, multi-layered Viennoiserie pastry folded with pure European butter for a crisp flaky exterior and an airy, melt-in-your-mouth interior.",
-    image: croissantBasketImg,
-    servings: "Baked fresh 5:00 AM daily",
-    isFeatured: true,
-    packOptions: [
-      { name: "Single Warm Croissant", priceDelta: 0 },
-      { name: "4-Pack Breakfast Basket", priceDelta: 12.25 },
-      { name: "Baker's Half-Dozen (6 Pack)", priceDelta: 19.75 },
-      { name: "Baker's Dozen (13 Pack)", priceDelta: 43.75 }
-    ]
-  },
-  {
-    id: "pastry-chocolate-swirl",
-    name: "European Chocolate Ganache Swirl Cookies",
-    germanName: "Schoko-Spritzgebäck mit Ganache",
-    category: "pastries",
-    price: 13.50,
-    badge: "Belgian Dark Ganache",
-    description: "Buttery, crumbly spritz shortbread rounds generously piped with high-gloss swirls of rich dark Belgian chocolate ganache and dusted with powdered sugar.",
-    image: chocolateSwirlCookiesImg,
-    servings: "4-Pack on slate board",
-    isFeatured: true,
-    packOptions: [
-      { name: "4-Pack Specialty Box", priceDelta: 0 },
-      { name: "8-Pack Gathering Tray", priceDelta: 12.50 },
-      { name: "Baker's Dozen (13 Cookies)", priceDelta: 25.50 }
-    ]
-  },
-  {
-    id: "pastry-florentine",
-    name: "Authentic Florentiner Almond Lace Cookies",
-    germanName: "Florentiner Mandelgebäck",
-    category: "pastries",
-    price: 16.00,
-    badge: "Caramelized Almond Lace",
-    description: "Crisp, wafer-thin lace cookies made with toasted sliced almonds, honey, and orange zest, half-dipped in decadent Belgian dark chocolate and filled with sweet vanilla cream.",
-    image: florentineCookiesImg,
-    servings: "1/2 lb Gift Selection (approx 10-12 pcs)",
-    isFeatured: true,
-    packOptions: [
-      { name: "1/2 lb Bakery Box", priceDelta: 0 },
-      { name: "1 lb Gift Tin", priceDelta: 15.00 }
-    ]
-  },
   {
     id: "pastry-apple-strudel",
     name: "Authentic Bavarian Apple Strudel",
