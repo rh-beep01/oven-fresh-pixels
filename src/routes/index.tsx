@@ -629,6 +629,7 @@ function Index() {
     });
 
     setSelectedProduct(null);
+    setCartOpen(true);
   };
 
   // Quick direct add (default specifications)
@@ -661,6 +662,7 @@ function Index() {
 
     const currentQty = cart.reduce((sum, i) => sum + i.quantity, 0);
     setToastItem({ item, count: currentQty + 1 });
+    setCartOpen(true);
   };
 
   const updateQuantity = (cartId: string, delta: number) => {
@@ -1794,8 +1796,14 @@ function Index() {
 
       {/* MODAL 1: PRODUCT DETAILS & SPECIFICATIONS MODAL (E-COMMERCE OPTIONS) */}
       {selectedProduct && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/75 p-4 backdrop-blur-xs animate-in fade-in-50 overflow-y-auto">
-          <div className="relative w-full max-w-xl rounded-2xl border border-border bg-card text-card-foreground shadow-2xl overflow-hidden my-8 max-h-[92vh] flex flex-col">
+        <div
+          onClick={() => setSelectedProduct(null)}
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/75 p-4 backdrop-blur-xs animate-in fade-in-50 overflow-y-auto cursor-pointer"
+        >
+          <div
+            onClick={(e) => e.stopPropagation()}
+            className="relative w-full max-w-xl rounded-2xl border border-border bg-card text-card-foreground shadow-2xl overflow-hidden my-8 max-h-[92vh] flex flex-col cursor-default"
+          >
             {/* Modal Header Bar */}
             <div className="relative aspect-16/9 bg-muted overflow-hidden shrink-0">
               <img
@@ -1964,8 +1972,14 @@ function Index() {
 
       {/* MODAL 2: PURE CART DRAWER (ORDER TRAY ONLY - ITEMS, QUANTITIES, TOTALS) */}
       {cartOpen && (
-        <div className="fixed inset-0 z-50 flex justify-end bg-black/60 backdrop-blur-xs animate-in fade-in-50">
-          <div className="w-full max-w-md bg-card text-card-foreground shadow-2xl flex flex-col h-full animate-in slide-in-from-right duration-300 border-l border-border">
+        <div
+          onClick={() => setCartOpen(false)}
+          className="fixed inset-0 z-50 flex justify-end bg-black/60 backdrop-blur-xs animate-in fade-in-50 cursor-pointer"
+        >
+          <div
+            onClick={(e) => e.stopPropagation()}
+            className="w-full max-w-md bg-card text-card-foreground shadow-2xl flex flex-col h-full animate-in slide-in-from-right duration-300 border-l border-border cursor-default"
+          >
             {/* Header */}
             <div className="p-5 border-b border-border flex items-center justify-between bg-muted/40">
               <div className="flex items-center gap-2">
@@ -2089,8 +2103,14 @@ function Index() {
 
       {/* MODAL 3: DEDICATED SHOPIFY CHECKOUT WINDOW (SEPARATE FROM CART DRAWER) */}
       {checkoutModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/75 p-4 backdrop-blur-xs animate-in fade-in-50 overflow-y-auto">
-          <div className="relative w-full max-w-xl rounded-2xl border border-border bg-card text-card-foreground shadow-2xl p-6 sm:p-8 my-8 max-h-[92vh] overflow-y-auto">
+        <div
+          onClick={() => setCheckoutModalOpen(false)}
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/75 p-4 backdrop-blur-xs animate-in fade-in-50 overflow-y-auto cursor-pointer"
+        >
+          <div
+            onClick={(e) => e.stopPropagation()}
+            className="relative w-full max-w-xl rounded-2xl border border-border bg-card text-card-foreground shadow-2xl p-6 sm:p-8 my-8 max-h-[92vh] overflow-y-auto cursor-default"
+          >
             <button
               onClick={() => setCheckoutModalOpen(false)}
               className="absolute top-4 right-4 rounded-md p-1.5 text-muted-foreground hover:bg-muted hover:text-foreground cursor-pointer"
@@ -2329,8 +2349,14 @@ function Index() {
 
       {/* MODAL 4: HOVERING / FLOATING CONTACT US POPUP */}
       {contactModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4 backdrop-blur-xs animate-in fade-in-50">
-          <div className="relative w-full max-w-md rounded-xl border border-border bg-card text-card-foreground shadow-2xl p-6 sm:p-7">
+        <div
+          onClick={() => setContactModalOpen(false)}
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4 backdrop-blur-xs animate-in fade-in-50 cursor-pointer"
+        >
+          <div
+            onClick={(e) => e.stopPropagation()}
+            className="relative w-full max-w-md rounded-xl border border-border bg-card text-card-foreground shadow-2xl p-6 sm:p-7 cursor-default"
+          >
             <button
               onClick={() => setContactModalOpen(false)}
               className="absolute top-4 right-4 rounded-md p-1.5 text-muted-foreground hover:bg-muted hover:text-foreground cursor-pointer"
